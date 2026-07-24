@@ -1,0 +1,88 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Waar geüploade foto's/video's terechtkomen
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+locale: nl
+site_url: https://www.dutchvenom.nl
+display_url: https://www.dutchvenom.nl
+
+collections:
+  - name: "bundels"
+    label: "🎁 Bundels (aanbiedingen)"
+    files:
+      - name: "bundellijst"
+        label: "Bundellijst"
+        file: "content/bundles.json"
+        fields:
+          - label: "Bundels"
+            name: "bundels"
+            widget: "list"
+            summary: "{{fields.naam}} — €{{fields.bundelprijs}}"
+            fields:
+              - { label: "Naam", name: "naam", widget: "string" }
+              - { label: "Ondertitel", name: "ondertitel", widget: "string", hint: "Bijv. 'Bundel 1 — Trainingspak + Tas'" }
+              - { label: "Beschrijving", name: "beschrijving", widget: "text" }
+              - { label: "Foto links (product 1)", name: "foto_links", widget: "image" }
+              - { label: "Alt-tekst links", name: "alt_links", widget: "string" }
+              - { label: "Foto rechts (product 2)", name: "foto_rechts", widget: "image" }
+              - { label: "Alt-tekst rechts", name: "alt_rechts", widget: "string" }
+              - { label: "Bundelprijs (€)", name: "bundelprijs", widget: "number", value_type: "float", step: 0.05 }
+              - { label: "Losse prijs samen (€, wordt doorgestreept)", name: "losse_prijs", widget: "number", value_type: "float", step: 0.05 }
+              - { label: "Badge (bijv. 'Bespaar €19,95')", name: "badge", widget: "string", required: false }
+              - { label: "Knoptekst", name: "knop_tekst", widget: "string", default: "Pak deze bundel" }
+              - { label: "Link (naar bestelpagina)", name: "link", widget: "string" }
+              - { label: "Actief (uit = bundel verbergen)", name: "actief", widget: "boolean", default: true }
+
+  - name: "producten"
+    label: "🛍️ Producten"
+    files:
+      - name: "productlijst"
+        label: "Productlijst"
+        file: "content/products.json"
+        fields:
+          - label: "Producten"
+            name: "products"
+            widget: "list"
+            summary: "{{fields.naam}} — €{{fields.prijs}}"
+            fields:
+              - { label: "Naam", name: "naam", widget: "string" }
+              - { label: "Categorie", name: "categorie", widget: "select", options: ["Heren", "Dames", "Accessoires"], default: "Heren" }
+              - { label: "Prijs (€)", name: "prijs", widget: "number", value_type: "float", step: 0.05 }
+              - { label: "Oude prijs (€, leeg = geen korting)", name: "oude_prijs", widget: "number", value_type: "float", required: false }
+              - { label: "Productfoto", name: "afbeelding", widget: "image" }
+              - { label: "Productvideo (mp4, optioneel — vervangt de foto op de kaart)", name: "video", widget: "file", required: false, hint: "Bijv. een clip uit Higgsfield. De foto blijft als voorvertoning/fallback. Houd 'm klein (<8MB)." }
+              - { label: "Alt-tekst foto (voor SEO)", name: "alt_tekst", widget: "string", hint: "Beschrijf de foto in één zin, bijv. 'Zwart trainingspak met logo'" }
+              - { label: "Beschrijving", name: "beschrijving", widget: "text" }
+              - { label: "Badge (bijv. Nieuw / Sale / Bestseller)", name: "badge", widget: "string", required: false }
+              - { label: "Uitverkocht", name: "uitverkocht", widget: "boolean", default: false }
+              - { label: "Link (naar bestelpagina)", name: "link", widget: "string", default: "https://www.dutchvenom.nl" }
+
+  - name: "instellingen"
+    label: "⚙️ Site-instellingen"
+    files:
+      - name: "site"
+        label: "Teksten & contact"
+        file: "content/site.json"
+        fields:
+          - { label: "Merknaam", name: "merk", widget: "string" }
+          - { label: "Logo (afbeelding, optioneel — vervangt het standaard V-icoon)", name: "logo", widget: "image", required: false, hint: "PNG met transparante achtergrond werkt het mooist. Wordt ±30px hoog getoond in de menubalk." }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Hero titel", name: "hero_titel", widget: "string", hint: "Het woord 'gif' of 'venom' krijgt automatisch de goudkleur" }
+          - { label: "Hero subtitel", name: "hero_subtitel", widget: "text" }
+          - { label: "Hero knoptekst", name: "hero_knop_tekst", widget: "string" }
+          - { label: "Hero video (mp4, bijv. uit Higgsfield — leeg = standaard achtergrond)", name: "hero_video", widget: "file", required: false, media_library: { config: { max_file_size: 50000000 } }, hint: "Tip: houd de video onder de 15MB voor snelle laadtijd. Video speelt automatisch af zonder geluid." }
+          - { label: "Aankondigingsbalk (bovenaan)", name: "aankondiging", widget: "string" }
+          - { label: "Over ons — titel", name: "over_titel", widget: "string" }
+          - { label: "Over ons — tekst", name: "over_tekst", widget: "text" }
+          - { label: "USP 1", name: "usp_1", widget: "string" }
+          - { label: "USP 2", name: "usp_2", widget: "string" }
+          - { label: "USP 3", name: "usp_3", widget: "string" }
+          - { label: "Instagram URL", name: "instagram", widget: "string" }
+          - { label: "TikTok URL", name: "tiktok", widget: "string" }
+          - { label: "E-mailadres", name: "email", widget: "string" }
+          - { label: "SEO titel (Google)", name: "seo_titel", widget: "string" }
+          - { label: "SEO beschrijving (Google)", name: "seo_beschrijving", widget: "text" }

@@ -1,0 +1,34 @@
+{
+  "bundels": [
+    {
+      "naam": "The Full Set",
+      "ondertitel": "Bundel 1 — Trainingspak + Crossbody Bag",
+      "beschrijving": "Het signature trainingspak samen met de crossbody bag. Compleet gezien, compleet gekocht.",
+      "foto_links": "/images/product-1.svg",
+      "alt_links": "Zwart Dutch Venom trainingspak",
+      "foto_rechts": "/images/product-4.svg",
+      "alt_rechts": "Zwarte Dutch Venom crossbody tas",
+      "bundelprijs": 109.95,
+      "losse_prijs": 129.90,
+      "badge": "Bespaar €19,95",
+      "knop_tekst": "Pak deze bundel",
+      "link": "https://www.dutchvenom.nl",
+      "actief": true
+    },
+    {
+      "naam": "The Couple Set",
+      "ondertitel": "Bundel 2 — Heren pak + Dames pak",
+      "beschrijving": "Eén voor jou, één voor haar. Twee signature tracksuits in één bundel — matchen zonder moeite.",
+      "foto_links": "/images/product-1.svg",
+      "alt_links": "Heren trainingspak Dutch Venom",
+      "foto_rechts": "/images/product-3.svg",
+      "alt_rechts": "Dames set Dutch Venom",
+      "bundelprijs": 159.95,
+      "losse_prijs": 179.90,
+      "badge": "Bespaar €19,95",
+      "knop_tekst": "Shop als koppel",
+      "link": "https://www.dutchvenom.nl",
+      "actief": true
+    }
+  ]
+}

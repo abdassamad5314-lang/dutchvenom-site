@@ -1,0 +1,82 @@
+{
+  "products": [
+    {
+      "naam": "DV Signature Tracksuit — Black",
+      "categorie": "Heren",
+      "prijs": 89.95,
+      "oude_prijs": 119.95,
+      "afbeelding": "/images/product-1.svg",
+      "alt_tekst": "Zwart Dutch Venom trainingspak voor heren met logo op de borst",
+      "beschrijving": "Ons signature trainingspak. Zware kwaliteit stof, oversized fit en geborduurd DV-logo. Limited stock.",
+      "badge": "Bestseller",
+      "uitverkocht": false,
+      "video": "",
+      "link": "https://www.dutchvenom.nl"
+    },
+    {
+      "naam": "DV Signature Tracksuit — Forest",
+      "categorie": "Heren",
+      "prijs": 89.95,
+      "oude_prijs": null,
+      "afbeelding": "/images/product-2.svg",
+      "alt_tekst": "Donkergroen Dutch Venom trainingspak voor heren",
+      "beschrijving": "Dezelfde signature fit in diep venom-groen. Rib-details bij pols en enkel, dubbel gestikte naden.",
+      "badge": "Nieuw",
+      "uitverkocht": false,
+      "video": "",
+      "link": "https://www.dutchvenom.nl"
+    },
+    {
+      "naam": "DV Cropped Hoodie — Bone",
+      "categorie": "Dames",
+      "prijs": 59.95,
+      "oude_prijs": null,
+      "afbeelding": "/images/product-3.svg",
+      "alt_tekst": "Gebroken witte cropped hoodie voor dames van Dutch Venom",
+      "beschrijving": "Cropped fit hoodie in bone white. Zachte binnenkant, geborduurd logo, valt ruim.",
+      "badge": "",
+      "uitverkocht": false,
+      "video": "",
+      "link": "https://www.dutchvenom.nl"
+    },
+    {
+      "naam": "DV Crossbody Bag",
+      "categorie": "Accessoires",
+      "prijs": 39.95,
+      "oude_prijs": 49.95,
+      "afbeelding": "/images/product-4.svg",
+      "alt_tekst": "Zwarte Dutch Venom crossbody tas met verstelbare band",
+      "beschrijving": "Compacte crossbody met waterafstotende buitenkant, twee ritsvakken en verstelbare band.",
+      "badge": "Sale",
+      "uitverkocht": false,
+      "video": "",
+      "link": "https://www.dutchvenom.nl"
+    },
+    {
+      "naam": "DV Jogger — Charcoal",
+      "categorie": "Dames",
+      "prijs": 49.95,
+      "oude_prijs": null,
+      "afbeelding": "/images/product-5.svg",
+      "alt_tekst": "Antraciet joggingbroek voor dames van Dutch Venom",
+      "beschrijving": "High-waist jogger met tapered fit. Combineert met de cropped hoodie voor de complete set.",
+      "badge": "",
+      "uitverkocht": false,
+      "video": "",
+      "link": "https://www.dutchvenom.nl"
+    },
+    {
+      "naam": "DV Venom Cap",
+      "categorie": "Accessoires",
+      "prijs": 24.95,
+      "oude_prijs": null,
+      "afbeelding": "/images/product-6.svg",
+      "alt_tekst": "Zwarte pet met Dutch Venom borduursel",
+      "beschrijving": "Klassieke 6-panel cap met geborduurde slang. One size, verstelbaar.",
+      "badge": "",
+      "uitverkocht": true,
+      "video": "",
+      "link": "https://www.dutchvenom.nl"
+    }
+  ]
+}

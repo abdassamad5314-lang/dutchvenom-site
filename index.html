@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dutch Venom | Premium Streetwear, Tracksuits & Hoodies uit Nederland</title>
+  <meta name="description" content="Shop premium streetwear van Dutch Venom: tracksuits, hoodies, joggers en accessoires voor heren en dames. Limited drops, verzending binnen 24 uur, gratis vanaf €75.">
+  <link rel="canonical" href="https://www.dutchvenom.nl/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0C1310">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dutch Venom">
+  <meta property="og:title" content="Dutch Venom | Premium Streetwear uit Nederland">
+  <meta property="og:description" content="Tracksuits, hoodies en accessoires. Limited drops, snelle verzending.">
+  <meta property="og:url" content="https://www.dutchvenom.nl/">
+  <meta property="og:image" content="https://www.dutchvenom.nl/images/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "OnlineStore",
+    "name": "Dutch Venom",
+    "url": "https://www.dutchvenom.nl/",
+    "logo": "https://www.dutchvenom.nl/images/og-image.jpg",
+    "description": "Nederlands streetwear label: tracksuits, hoodies en accessoires in limited drops.",
+    "areaServed": "NL"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --nightscale:#0C1310;
+      --serpent:#142019;
+      --serpent-deep:#0F1914;
+      --bone:#EAE6D9;
+      --bone-dim:#B9B6A8;
+      --moss:#77866F;
+      --toxin:#D9A441;
+      --line:#223129;
+      --radius:14px;
+      --wide:1200px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      background:var(--nightscale);
+      color:var(--bone);
+      font-family:"Instrument Sans",system-ui,sans-serif;
+      font-size:17px;line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    ::selection{background:var(--toxin);color:var(--nightscale)}
+    img{max-width:100%;display:block}
+    a{color:inherit}
+    .wrap{max-width:var(--wide);margin:0 auto;padding:0 24px}
+    .mono{font-family:"Space Mono",monospace}
+
+    .announce{
+      background:var(--toxin);color:var(--nightscale);
+      font-family:"Space Mono",monospace;font-size:12.5px;font-weight:700;
+      text-align:center;padding:9px 16px;letter-spacing:.04em;
+    }
+
+    header{
+      position:sticky;top:0;z-index:50;
+      background:rgba(12,19,16,.82);
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+    .logo{
+      font-family:"Archivo",sans-serif;font-weight:900;font-stretch:118%;
+      font-size:21px;letter-spacing:.06em;text-decoration:none;
+      display:flex;align-items:center;gap:10px;
+    }
+    .logo svg,.logo img{width:26px;height:26px}
+    .nav-links{display:flex;gap:34px;list-style:none}
+    .nav-links a{
+      text-decoration:none;font-size:14.5px;font-weight:500;color:var(--bone-dim);
+      transition:color .2s;
+    }
+    .nav-links a:hover,.nav-links a:focus-visible{color:var(--toxin)}
+    .nav-cta{
+      font-family:"Space Mono",monospace;font-size:13px;font-weight:700;
+      color:var(--nightscale);background:var(--bone);text-decoration:none;
+      padding:10px 18px;border-radius:100px;transition:background .2s,transform .2s;
+    }
+    .nav-cta:hover{background:var(--toxin);transform:translateY(-1px)}
+    .burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--bone);padding:8px 10px;font-size:18px;cursor:pointer}
+
+    .hero{
+      position:relative;min-height:88vh;display:flex;align-items:center;
+      overflow:hidden;border-bottom:1px solid var(--line);
+    }
+    .hero-bg{
+      position:absolute;inset:-12% 0;z-index:0;opacity:.5;
+      background:
+        radial-gradient(60% 55% at 72% 30%, rgba(217,164,65,.14), transparent 62%),
+        radial-gradient(45% 45% at 18% 78%, rgba(119,134,111,.16), transparent 60%);
+      will-change:transform;
+    }
+    .hero-scales{position:absolute;inset:0;z-index:0;opacity:.35}
+    .hero-video{
+      position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+    }
+    .hero-overlay{
+      position:absolute;inset:0;z-index:1;
+      background:linear-gradient(90deg, rgba(12,19,16,.88) 0%, rgba(12,19,16,.55) 55%, rgba(12,19,16,.25) 100%);
+    }
+    .hero.has-video .hero-scales,.hero.has-video .hero-bg{display:none}
+    .hero-inner{position:relative;z-index:2;padding:96px 0 120px}
+    .eyebrow{
+      font-family:"Space Mono",monospace;font-size:12.5px;font-weight:700;
+      letter-spacing:.22em;text-transform:uppercase;color:var(--toxin);
+      display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;
+    }
+    .eyebrow::before{content:"";width:34px;height:2px;background:var(--toxin)}
+    h1{
+      font-family:"Archivo",sans-serif;font-weight:900;font-stretch:112%;
+      font-size:clamp(44px,8.2vw,104px);line-height:.95;letter-spacing:-.01em;
+      text-transform:uppercase;max-width:12ch;
+    }
+    h1 .venom{color:var(--toxin);position:relative;white-space:nowrap}
+    .hero-sub{max-width:52ch;color:var(--bone-dim);font-size:18.5px;margin:26px 0 38px}
+    .btn{
+      display:inline-flex;align-items:center;gap:12px;text-decoration:none;
+      font-family:"Space Mono",monospace;font-weight:700;font-size:14.5px;
+      background:var(--toxin);color:var(--nightscale);
+      padding:16px 30px;border-radius:100px;border:1px solid var(--toxin);
+      transition:transform .2s,box-shadow .2s;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(217,164,65,.28)}
+    .btn.ghost{background:transparent;color:var(--bone);border-color:var(--line);margin-left:14px}
+    .btn.ghost:hover{border-color:var(--toxin);color:var(--toxin);box-shadow:none}
+    .hero-mark{
+      position:absolute;right:-4vw;bottom:-6vh;z-index:1;
+      width:min(46vw,560px);opacity:.16;pointer-events:none;will-change:transform;
+    }
+
+    .marquee{
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      background:var(--serpent-deep);overflow:hidden;padding:15px 0;
+    }
+    .marquee-track{
+      display:flex;gap:0;width:max-content;
+      animation:slide 26s linear infinite;
+    }
+    .marquee span{
+      font-family:"Archivo",sans-serif;font-weight:900;font-stretch:120%;
+      font-size:15px;letter-spacing:.24em;text-transform:uppercase;
+      color:var(--moss);padding:0 34px;white-space:nowrap;
+    }
+    .marquee span b{color:var(--toxin);font-weight:900}
+    @keyframes slide{to{transform:translateX(-50%)}}
+
+    section{padding:104px 0}
+    .sec-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:48px;flex-wrap:wrap}
+    h2{
+      font-family:"Archivo",sans-serif;font-weight:900;font-stretch:112%;
+      font-size:clamp(30px,4.4vw,52px);line-height:1;text-transform:uppercase;
+    }
+    .sec-head p{color:var(--bone-dim);max-width:44ch}
+
+    /* ---------- bundel-scenes (scroll-animatie) ---------- */
+    .bundles-intro{padding:90px 0 0;text-align:center}
+    .bundles-intro .eyebrow{justify-content:center}
+    .bundles-intro .eyebrow::before{display:none}
+    .bundle-scene{position:relative;height:260vh}
+    .bundle-sticky{
+      position:sticky;top:0;height:100vh;overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .bundle-stage{position:relative;width:min(1100px,94vw);height:min(72vh,640px)}
+    .b-card{
+      position:absolute;top:6%;width:min(34%,300px);aspect-ratio:4/5;
+      border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+      background:var(--serpent);box-shadow:0 24px 60px rgba(0,0,0,.45);
+      will-change:transform;
+    }
+    .b-card img{width:100%;height:100%;object-fit:cover}
+    .b-card.left{left:50%;margin-left:calc(-1 * min(34%,300px))}
+    .b-card.right{left:50%}
+    .b-plus{
+      position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);
+      font-family:"Archivo",sans-serif;font-weight:900;font-size:56px;color:var(--toxin);
+      opacity:0;will-change:opacity,transform;z-index:3;
+      text-shadow:0 4px 24px rgba(0,0,0,.6);
+    }
+    .b-info{
+      position:absolute;left:50%;bottom:0;transform:translateX(-50%) translateY(30px);
+      width:min(560px,92%);text-align:center;opacity:0;will-change:opacity,transform;
+    }
+    .b-info .b-sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--moss);margin-bottom:8px}
+    .b-info h3{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:112%;font-size:clamp(26px,4vw,42px);text-transform:uppercase;line-height:1;margin-bottom:10px}
+    .b-info .b-desc{color:var(--bone-dim);font-size:15.5px;margin-bottom:16px}
+    .b-price{font-family:"Space Mono",monospace;font-weight:700;font-size:24px;color:var(--toxin);margin-bottom:8px}
+    .b-price s{color:var(--moss);font-weight:400;font-size:16px;margin-right:10px}
+    .b-badge{
+      display:inline-block;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;
+      background:var(--toxin);color:var(--nightscale);padding:5px 14px;border-radius:100px;
+      margin-bottom:16px;letter-spacing:.04em;
+    }
+    .b-hint{
+      position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);
+      font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.18em;
+      text-transform:uppercase;color:var(--moss);opacity:.8;
+    }
+    body.no-scenes .bundle-scene{height:auto;padding:60px 0}
+    body.no-scenes .bundle-sticky{position:static;height:auto;overflow:visible}
+    body.no-scenes .bundle-stage{height:auto;display:grid;justify-items:center;gap:20px;padding:20px 0 40px}
+    body.no-scenes .b-card{position:static;margin:0!important;width:min(70%,300px)}
+    body.no-scenes .b-plus,body.no-scenes .b-info{position:static;opacity:1;transform:none}
+    body.no-scenes .b-hint{display:none}
+    @media (max-width:680px){
+      .bundle-scene{height:230vh}
+      .b-card{width:42%;top:10%}
+      .b-card.left{margin-left:-42%}
+      .b-plus{font-size:40px;top:34%}
+    }
+
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+    .filters button{
+      font-family:"Space Mono",monospace;font-size:13px;font-weight:700;cursor:pointer;
+      background:transparent;color:var(--bone-dim);border:1px solid var(--line);
+      padding:9px 18px;border-radius:100px;transition:all .2s;
+    }
+    .filters button:hover{border-color:var(--toxin);color:var(--toxin)}
+    .filters button.active{background:var(--bone);color:var(--nightscale);border-color:var(--bone)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+    .card{
+      background:var(--serpent);border:1px solid var(--line);border-radius:var(--radius);
+      overflow:hidden;display:flex;flex-direction:column;
+      transition:transform .3s,border-color .3s;
+    }
+    .card:hover{transform:translateY(-6px);border-color:rgba(217,164,65,.5)}
+    .card-img{position:relative;aspect-ratio:4/5;overflow:hidden;background:#0a0f0d}
+    .card-img img,.card-img video{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+    .card:hover .card-img img,.card:hover .card-img video{transform:scale(1.045)}
+    .badge{
+      position:absolute;top:14px;left:14px;
+      font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.08em;
+      background:var(--toxin);color:var(--nightscale);padding:5px 12px;border-radius:100px;
+      text-transform:uppercase;
+    }
+    .badge.out{background:var(--bone-dim)}
+    .card-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
+    .card-cat{font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--moss)}
+    .card-title{font-family:"Archivo",sans-serif;font-weight:800;font-size:18.5px;line-height:1.2}
+    .card-desc{font-size:14.5px;color:var(--bone-dim);flex:1}
+    .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .price{font-family:"Space Mono",monospace;font-weight:700;font-size:17px;color:var(--toxin)}
+    .price s{color:var(--moss);font-weight:400;font-size:13.5px;margin-right:8px}
+    .card-btn{
+      font-family:"Space Mono",monospace;font-size:12.5px;font-weight:700;text-decoration:none;
+      color:var(--bone);border:1px solid var(--line);padding:9px 16px;border-radius:100px;
+      transition:all .2s;
+    }
+    .card-btn:hover{background:var(--toxin);border-color:var(--toxin);color:var(--nightscale)}
+    .card.sold .card-img img,.card.sold .card-img video{filter:grayscale(1);opacity:.55}
+
+    .usps{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--serpent-deep)}
+    .usps .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .usp{
+      padding:34px 26px;display:flex;align-items:center;gap:16px;
+      border-left:1px solid var(--line);
+    }
+    .usp:first-child{border-left:none}
+    .usp svg{width:26px;height:26px;flex:none;color:var(--toxin)}
+    .usp p{font-size:15px;font-weight:500}
+
+    .about{display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center}
+    .about-visual{
+      position:relative;aspect-ratio:4/5;border-radius:var(--radius);
+      overflow:hidden;border:1px solid var(--line);background:var(--serpent);
+    }
+    .about-visual svg{position:absolute;inset:0;width:100%;height:100%}
+    .about h2{margin-bottom:22px}
+    .about p{color:var(--bone-dim);margin-bottom:16px}
+    .about .mono-note{
+      font-family:"Space Mono",monospace;font-size:13px;color:var(--toxin);
+      border-left:2px solid var(--toxin);padding-left:16px;margin-top:26px;
+    }
+
+    .faq{max-width:820px;margin:0 auto}
+    details{border-bottom:1px solid var(--line)}
+    summary{
+      cursor:pointer;list-style:none;padding:24px 0;
+      font-family:"Archivo",sans-serif;font-weight:800;font-size:18px;
+      display:flex;justify-content:space-between;align-items:center;gap:20px;
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"+";font-family:"Space Mono",monospace;color:var(--toxin);font-size:22px;transition:transform .25s}
+    details[open] summary::after{transform:rotate(45deg)}
+    details p{color:var(--bone-dim);padding:0 0 24px;max-width:64ch}
+
+    footer{border-top:1px solid var(--line);background:var(--serpent-deep);padding:70px 0 34px}
+    .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:50px;margin-bottom:54px}
+    .foot-grid h3{font-family:"Space Mono",monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--moss);margin-bottom:18px}
+    .foot-grid ul{list-style:none}
+    .foot-grid li{margin-bottom:10px}
+    .foot-grid a{text-decoration:none;color:var(--bone-dim);font-size:15px;transition:color .2s}
+    .foot-grid a:hover{color:var(--toxin)}
+    .foot-brand{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:118%;font-size:26px;letter-spacing:.05em;margin-bottom:14px}
+    .foot-brand span{color:var(--toxin)}
+    .foot-desc{color:var(--bone-dim);font-size:15px;max-width:36ch}
+    .foot-bottom{
+      border-top:1px solid var(--line);padding-top:26px;
+      display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+      font-family:"Space Mono",monospace;font-size:12px;color:var(--moss);
+    }
+
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.in{opacity:1;transform:none}
+
+    a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--toxin);outline-offset:3px;border-radius:4px}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation:none!important;transition:none!important}
+      html{scroll-behavior:auto}
+      .reveal{opacity:1;transform:none}
+    }
+
+    @media (max-width:980px){
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .about{grid-template-columns:1fr;gap:44px}
+      .usps .wrap{grid-template-columns:1fr}
+      .usp{border-left:none;border-top:1px solid var(--line)}
+      .usp:first-child{border-top:none}
+      .foot-grid{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:680px){
+      .nav-links{
+        display:none;position:absolute;top:66px;left:0;right:0;
+        background:var(--nightscale);border-bottom:1px solid var(--line);
+        flex-direction:column;gap:0;padding:10px 24px 20px;
+      }
+      .nav-links.open{display:flex}
+      .nav-links li{padding:12px 0;border-bottom:1px solid var(--line)}
+      .burger{display:block}
+      .nav-cta{display:none}
+      .grid{grid-template-columns:1fr}
+      section{padding:72px 0}
+      .btn.ghost{margin-left:0;margin-top:12px}
+      .foot-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="announce" id="announce">Gratis verzending vanaf €75 · Voor 16:00 besteld = morgen in huis</div>
+
+  <header>
+    <div class="wrap nav">
+      <a class="logo" href="#top" aria-label="Dutch Venom home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 4l9 16L21 4h-4.5L12 13 7.5 4H3z" fill="#D9A441"/>
+        </svg>
+        <span id="brandName">DUTCH VENOM</span>
+      </a>
+      <nav aria-label="Hoofdmenu">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#bundels">Bundels</a></li>
+          <li><a href="#collectie">Collectie</a></li>
+          <li><a href="#over">Over ons</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <a class="nav-cta" href="#collectie">SHOP NU</a>
+      <button class="burger" id="burger" aria-label="Menu openen" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" style="padding:0">
+      <video class="hero-video" id="heroVideo" autoplay muted loop playsinline aria-hidden="true" hidden></video>
+      <div class="hero-overlay" id="heroOverlay" aria-hidden="true" hidden></div>
+      <div class="hero-bg" id="heroBg" aria-hidden="true"></div>
+      <svg class="hero-scales" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="scales" width="56" height="34" patternUnits="userSpaceOnUse">
+            <path d="M0 34a28 28 0 0 1 56 0" fill="none" stroke="#1B2A21" stroke-width="1.2"/>
+            <path d="M-28 17a28 28 0 0 1 56 0M28 17a28 28 0 0 1 56 0" fill="none" stroke="#1B2A21" stroke-width="1.2"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#scales)"/>
+      </svg>
+
+      <div class="wrap hero-inner">
+        <p class="eyebrow">Nederlands streetwear label</p>
+        <h1 id="heroTitle">Streetwear met <span class="venom">gif</span> erin</h1>
+        <p class="hero-sub" id="heroSub">Premium tracksuits, hoodies en accessoires. Ontworpen in Nederland, gedragen door iedereen die opvalt.</p>
+        <div>
+          <a class="btn" href="#collectie" id="heroBtn">Shop de collectie
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="btn ghost" href="#over">Ons verhaal</a>
+        </div>
+      </div>
+
+      <svg class="hero-mark" id="heroMark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 4l9 16L21 4h-4.5L12 13 7.5 4H3z" fill="#D9A441"/>
+      </svg>
+    </section>
+
+    <!-- ================= MARQUEE ================= -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marqueeTrack">
+        <span>Dutch Venom <b>✕</b> Prime Fashion <b>✕</b> Limited Drops <b>✕</b> Op = Op <b>✕</b></span>
+        <span>Dutch Venom <b>✕</b> Prime Fashion <b>✕</b> Limited Drops <b>✕</b> Op = Op <b>✕</b></span>
+      </div>
+    </div>
+
+    <!-- ================= BUNDELS (scroll-verhaal) ================= -->
+    <section id="bundels" style="padding:0">
+      <div class="bundles-intro wrap">
+        <p class="eyebrow">Bundel &amp; bespaar</p>
+        <h2>Samen sterker</h2>
+        <p style="color:var(--bone-dim);max-width:52ch;margin:14px auto 0">Scroll en zie het gebeuren: onze sets komen samen als bundel met korting — en vallen daarna weer uit elkaar als je ze liever los shopt.</p>
+      </div>
+      <div id="bundleScenes"></div>
+    </section>
+
+    <!-- ================= COLLECTIE ================= -->
+    <section id="collectie">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Of shop ze los</h2>
+          <p>Elke drop is limited. Uitverkocht is uitverkocht — er komt geen herdruk.</p>
+        </div>
+        <div class="filters reveal" id="filters" role="group" aria-label="Filter op categorie">
+          <button class="active" data-cat="alles">Alles</button>
+        </div>
+        <div class="grid" id="productGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ================= USP ================= -->
+    <div class="usps">
+      <div class="wrap">
+        <div class="usp reveal">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <p id="usp1">Limited drops — op = op</p>
+        </div>
+        <div class="usp reveal">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <p id="usp2">Verzending binnen 24 uur</p>
+        </div>
+        <div class="usp reveal">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2m0-6-2 2 2 2m-2-2h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p id="usp3">14 dagen retourrecht</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= OVER ================= -->
+    <section id="over">
+      <div class="wrap about">
+        <div class="about-visual reveal" aria-hidden="true">
+          <svg preserveAspectRatio="xMidYMid slice">
+            <rect width="100%" height="100%" fill="url(#scales)"/>
+          </svg>
+          <svg viewBox="0 0 24 24" fill="none" style="position:absolute;inset:22%;opacity:.9">
+            <path d="M3 4l9 16L21 4h-4.5L12 13 7.5 4H3z" fill="#D9A441"/>
+          </svg>
+        </div>
+        <div class="reveal">
+          <p class="eyebrow">Over Dutch Venom</p>
+          <h2 id="overTitel">Geboren in de straat, gebouwd voor de spotlight</h2>
+          <p id="overTekst">Dutch Venom is een Nederlands streetwear label. Geen massaproductie, geen middelmaat. Elke drop is limited en elk item wordt gecontroleerd voordat het de deur uitgaat. Draag het één keer en je snapt de naam.</p>
+          <p class="mono-note">DV / EST. NL — prime fashion, straight venom.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section id="faq" style="background:var(--serpent-deep);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+      <div class="wrap">
+        <div class="sec-head reveal"><h2>Veelgestelde vragen</h2></div>
+        <div class="faq reveal">
+          <details>
+            <summary>Hoe snel wordt mijn bestelling verzonden?</summary>
+            <p>Bestellingen die voor 16:00 binnenkomen worden dezelfde dag verzonden. Binnen Nederland heb je je pakket meestal de volgende werkdag in huis.</p>
+          </details>
+          <details>
+            <summary>Wat zijn de verzendkosten?</summary>
+            <p>Verzending binnen Nederland is gratis vanaf €75. Daaronder betaal je €4,95. We verzenden ook naar België.</p>
+          </details>
+          <details>
+            <summary>Kan ik mijn bestelling retourneren?</summary>
+            <p>Ja, je hebt 14 dagen retourrecht. Items moeten ongedragen zijn en de labels moeten er nog aan zitten. Mail ons en we regelen het.</p>
+          </details>
+          <details>
+            <summary>Komen uitverkochte items terug?</summary>
+            <p>Nee. Onze drops zijn limited: als een item uitverkocht is, komt het niet terug. Volg ons op Instagram om nieuwe drops niet te missen.</p>
+          </details>
+          <details>
+            <summary>Hoe vallen de maten?</summary>
+            <p>Onze tracksuits en hoodies hebben een oversized fit. Wil je het strakker? Bestel dan een maat kleiner. Bij elk product staat een maatadvies.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT / FOOTER ================= -->
+    <footer id="contact">
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <p class="foot-brand">DUTCH<span>VENOM</span></p>
+            <p class="foot-desc" id="footDesc">Premium streetwear uit Nederland. Tracksuits, hoodies en accessoires in limited drops.</p>
+          </div>
+          <div>
+            <h3>Menu</h3>
+            <ul>
+              <li><a href="#bundels">Bundels</a></li>
+              <li><a href="#collectie">Collectie</a></li>
+              <li><a href="#over">Over ons</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="mailto:info@dutchvenom.nl" id="footEmail">info@dutchvenom.nl</a></li>
+              <li><a href="https://instagram.com/dutchvenom" id="footInsta" rel="noopener" target="_blank">Instagram</a></li>
+              <li><a href="https://tiktok.com/@dutchvenom" id="footTiktok" rel="noopener" target="_blank">TikTok</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="foot-bottom">
+          <span>© <span id="year"></span> Dutch Venom — Alle rechten voorbehouden</span>
+          <span>KVK &amp; BTW op aanvraag · NL</span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+  (function(){
+    "use strict";
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    var burger = document.getElementById("burger");
+    var navLinks = document.getElementById("navLinks");
+    burger.addEventListener("click", function(){
+      var open = navLinks.classList.toggle("open");
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    navLinks.addEventListener("click", function(e){
+      if(e.target.tagName === "A") navLinks.classList.remove("open");
+    });
+
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, {threshold:.12});
+    function observeReveals(scope){
+      (scope||document).querySelectorAll(".reveal:not(.in)").forEach(function(el){ io.observe(el); });
+    }
+    observeReveals();
+
+    if(!reduced){
+      var heroBg = document.getElementById("heroBg");
+      var heroMark = document.getElementById("heroMark");
+      window.addEventListener("scroll", function(){
+        var y = window.scrollY;
+        if(y < 900){
+          heroBg.style.transform = "translateY(" + (y * .18) + "px)";
+          heroMark.style.transform = "translateY(" + (y * -.10) + "px) rotate(" + (y * .01) + "deg)";
+        }
+      }, {passive:true});
+    }
+
+    var FALLBACK_PRODUCTS = {products:[
+      {naam:"DV Signature Tracksuit — Black",categorie:"Heren",prijs:89.95,oude_prijs:119.95,afbeelding:"/images/product-1.svg",alt_tekst:"Zwart Dutch Venom trainingspak",beschrijving:"Ons signature trainingspak. Zware kwaliteit, oversized fit, geborduurd DV-logo.",badge:"Bestseller",uitverkocht:false,link:"#"},
+      {naam:"DV Cropped Hoodie — Bone",categorie:"Dames",prijs:59.95,oude_prijs:null,afbeelding:"/images/product-3.svg",alt_tekst:"Cropped hoodie in bone white",beschrijving:"Cropped fit hoodie in bone white. Zachte binnenkant, geborduurd logo.",badge:"",uitverkocht:false,link:"#"}
+    ]};
+
+    function euro(n){
+      return "€" + Number(n).toFixed(2).replace(".", ",");
+    }
+
+    function renderProducts(data){
+      var products = (data && data.products) || [];
+      var grid = document.getElementById("productGrid");
+      var filterBox = document.getElementById("filters");
+
+      var cats = [];
+      products.forEach(function(p){
+        if(p.categorie && cats.indexOf(p.categorie) === -1) cats.push(p.categorie);
+      });
+      cats.forEach(function(c){
+        var b = document.createElement("button");
+        b.textContent = c; b.dataset.cat = c;
+        filterBox.appendChild(b);
+      });
+      filterBox.addEventListener("click", function(e){
+        if(e.target.tagName !== "BUTTON") return;
+        filterBox.querySelectorAll("button").forEach(function(b){ b.classList.remove("active"); });
+        e.target.classList.add("active");
+        draw(e.target.dataset.cat);
+      });
+
+      function draw(cat){
+        grid.innerHTML = "";
+        products.forEach(function(p, i){
+          if(cat && cat !== "alles" && p.categorie !== cat) return;
+          var card = document.createElement("article");
+          card.className = "card reveal" + (p.uitverkocht ? " sold" : "");
+          card.style.transitionDelay = (i % 3) * 70 + "ms";
+
+          var badgeHtml = "";
+          if(p.uitverkocht){ badgeHtml = '<span class="badge out">Uitverkocht</span>'; }
+          else if(p.badge){ badgeHtml = '<span class="badge"></span>'; }
+
+          var hasVideo = p.video && !reduced;
+          var mediaHtml = hasVideo
+            ? '<video autoplay muted loop playsinline preload="metadata"></video>'
+            : '<img loading="lazy" width="800" height="1000">';
+          card.innerHTML =
+            '<div class="card-img">' + badgeHtml + mediaHtml + '</div>' +
+            '<div class="card-body">' +
+              '<p class="card-cat"></p>' +
+              '<h3 class="card-title"></h3>' +
+              '<p class="card-desc"></p>' +
+              '<div class="card-foot">' +
+                '<p class="price"></p>' +
+                '<a class="card-btn" target="_blank" rel="noopener"></a>' +
+              '</div>' +
+            '</div>';
+
+          /* veilig invullen (geen HTML-injectie vanuit CMS-velden) */
+          if(hasVideo){
+            var vid = card.querySelector("video");
+            vid.src = p.video;
+            if(p.afbeelding) vid.poster = p.afbeelding;
+            vid.setAttribute("aria-label", p.alt_tekst || p.naam || "");
+          } else {
+            var img = card.querySelector("img");
+            img.src = p.afbeelding || "";
+            img.alt = p.alt_tekst || p.naam || "";
+          }
+          if(p.badge && !p.uitverkocht) card.querySelector(".badge").textContent = p.badge;
+          card.querySelector(".card-cat").textContent = p.categorie || "";
+          card.querySelector(".card-title").textContent = p.naam || "";
+          card.querySelector(".card-desc").textContent = p.beschrijving || "";
+          var priceEl = card.querySelector(".price");
+          if(p.oude_prijs){
+            var s = document.createElement("s"); s.textContent = euro(p.oude_prijs);
+            priceEl.appendChild(s);
+          }
+          priceEl.appendChild(document.createTextNode(euro(p.prijs)));
+          var a = card.querySelector(".card-btn");
+          if(p.uitverkocht){ a.textContent = "Op = op"; a.removeAttribute("href"); a.style.opacity=".5"; a.style.pointerEvents="none"; }
+          else { a.textContent = "Bekijk"; a.href = p.link || "#"; }
+
+          grid.appendChild(card);
+        });
+        observeReveals(grid);
+      }
+      draw("alles");
+
+      try{
+        var ld = {
+          "@context":"https://schema.org","@type":"ItemList",
+          "itemListElement": products.map(function(p, i){
+            return {"@type":"ListItem","position":i+1,"item":{
+              "@type":"Product","name":p.naam,"description":p.beschrijving,
+              "image":"https://www.dutchvenom.nl"+(p.afbeelding||""),
+              "offers":{"@type":"Offer","priceCurrency":"EUR","price":String(p.prijs),
+                "availability": p.uitverkocht ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"}
+            }};
+          })
+        };
+        var tag = document.createElement("script");
+        tag.type = "application/ld+json";
+        tag.textContent = JSON.stringify(ld);
+        document.head.appendChild(tag);
+      }catch(e){}
+    }
+
+    /* ---------- bundel-scenes: samen komen → korting tonen → uit elkaar vallen ---------- */
+    function smooth(p, a, b){
+      var t = Math.min(1, Math.max(0, (p - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    }
+    function renderBundles(data){
+      var bundels = ((data && data.bundels) || []).filter(function(b){ return b.actief !== false; });
+      var host = document.getElementById("bundleScenes");
+      if(!bundels.length){ document.getElementById("bundels").style.display = "none"; return; }
+      if(reduced) document.body.classList.add("no-scenes");
+
+      var scenes = [];
+      bundels.forEach(function(b, idx){
+        var scene = document.createElement("div");
+        scene.className = "bundle-scene";
+        scene.innerHTML =
+          '<div class="bundle-sticky"><div class="bundle-stage">' +
+            '<div class="b-card left"><img loading="lazy"></div>' +
+            '<div class="b-plus" aria-hidden="true">+</div>' +
+            '<div class="b-card right"><img loading="lazy"></div>' +
+            '<div class="b-info">' +
+              '<p class="b-sub"></p><h3></h3><p class="b-desc"></p>' +
+              '<p class="b-price"></p><span class="b-badge"></span><br>' +
+              '<a class="btn" target="_blank" rel="noopener"></a>' +
+            '</div>' +
+            '<p class="b-hint">' + (idx === bundels.length - 1 ? "Scroll door — of shop ze los ↓" : "Blijf scrollen ↓") + '</p>' +
+          '</div></div>';
+
+        var imgs = scene.querySelectorAll("img");
+        imgs[0].src = b.foto_links || ""; imgs[0].alt = b.alt_links || b.naam || "";
+        imgs[1].src = b.foto_rechts || ""; imgs[1].alt = b.alt_rechts || b.naam || "";
+        scene.querySelector(".b-sub").textContent = b.ondertitel || "";
+        scene.querySelector("h3").textContent = b.naam || "";
+        scene.querySelector(".b-desc").textContent = b.beschrijving || "";
+        var priceEl = scene.querySelector(".b-price");
+        if(b.losse_prijs){ var s = document.createElement("s"); s.textContent = euro(b.losse_prijs); priceEl.appendChild(s); }
+        priceEl.appendChild(document.createTextNode(euro(b.bundelprijs)));
+        var badgeEl = scene.querySelector(".b-badge");
+        if(b.badge) badgeEl.textContent = b.badge; else badgeEl.style.display = "none";
+        var a = scene.querySelector(".btn");
+        a.textContent = b.knop_tekst || "Pak deze bundel";
+        a.href = b.link || "#";
+
+        host.appendChild(scene);
+        scenes.push({
+          el: scene,
+          left: scene.querySelector(".b-card.left"),
+          right: scene.querySelector(".b-card.right"),
+          plus: scene.querySelector(".b-plus"),
+          info: scene.querySelector(".b-info"),
+          hint: scene.querySelector(".b-hint")
+        });
+      });
+
+      if(reduced) return;
+
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var vh = window.innerHeight;
+        scenes.forEach(function(sc){
+          var r = sc.el.getBoundingClientRect();
+          var total = r.height - vh;
+          if(total <= 0) return;
+          var p = Math.min(1, Math.max(0, -r.top / total));
+          if(r.bottom < -50 || r.top > vh + 50) return;
+
+          var converge = smooth(p, .02, .40);
+          var sep = smooth(p, .74, .98);
+          var spread = 44 * (1 - converge + sep) - 2.5 * converge * (1 - sep);
+          var rot = 9 * (1 - converge + sep);
+          var lift = 12 * (1 - converge + sep);
+          sc.left.style.transform  = "translateX(" + (-spread) + "vw) translateY(" + lift + "px) rotate(" + (-rot) + "deg)";
+          sc.right.style.transform = "translateX(" + spread + "vw) translateY(" + lift + "px) rotate(" + rot + "deg)";
+
+          var plusO = Math.min(smooth(p, .28, .40), 1 - smooth(p, .72, .80));
+          sc.plus.style.opacity = plusO;
+          sc.plus.style.transform = "translate(-50%,-50%) scale(" + (0.6 + 0.4 * plusO) + ")";
+
+          var infoO = Math.min(smooth(p, .40, .54), 1 - smooth(p, .74, .88));
+          sc.info.style.opacity = infoO;
+          sc.info.style.transform = "translateX(-50%) translateY(" + (30 * (1 - infoO)) + "px)";
+          sc.info.style.pointerEvents = infoO > .5 ? "auto" : "none";
+
+          sc.hint.style.opacity = p > .55 && p < .8 ? .8 : (p < .15 ? .8 : 0);
+        });
+      }
+      window.addEventListener("scroll", function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, {passive:true});
+      window.addEventListener("resize", update);
+      update();
+    }
+
+    function applySite(s){
+      if(!s) return;
+      function set(id, val){ var el = document.getElementById(id); if(el && val) el.textContent = val; }
+      set("announce", s.aankondiging);
+      set("brandName", s.merk);
+      if(s.logo){
+        var logoLink = document.querySelector(".logo");
+        var oldSvg = logoLink.querySelector("svg");
+        var logoImg = document.createElement("img");
+        logoImg.src = s.logo;
+        logoImg.alt = (s.merk || "Dutch Venom") + " logo";
+        logoImg.style.height = "30px";
+        logoImg.style.width = "auto";
+        logoLink.replaceChild(logoImg, oldSvg);
+      }
+      set("heroSub", s.hero_subtitel);
+      set("overTitel", s.over_titel);
+      set("overTekst", s.over_tekst);
+      set("usp1", s.usp_1); set("usp2", s.usp_2); set("usp3", s.usp_3);
+      set("footEmail", s.email);
+      if(s.hero_titel){
+        var h = document.getElementById("heroTitle");
+        h.textContent = "";
+        var parts = s.hero_titel.split(/\b(gif|venom)\b/i);
+        parts.forEach(function(part){
+          if(/^(gif|venom)$/i.test(part)){
+            var sp = document.createElement("span"); sp.className = "venom"; sp.textContent = part;
+            h.appendChild(sp);
+          } else { h.appendChild(document.createTextNode(part)); }
+        });
+      }
+      var btn = document.getElementById("heroBtn");
+      if(s.hero_knop_tekst) btn.childNodes[0].textContent = s.hero_knop_tekst + " ";
+      if(s.email){ document.getElementById("footEmail").href = "mailto:" + s.email; }
+      if(s.instagram){ document.getElementById("footInsta").href = s.instagram; }
+      if(s.tiktok){ document.getElementById("footTiktok").href = s.tiktok; }
+      if(s.seo_titel) document.title = s.seo_titel;
+      if(s.seo_beschrijving){
+        var m = document.querySelector('meta[name="description"]');
+        if(m) m.setAttribute("content", s.seo_beschrijving);
+      }
+      if(s.hero_video && !reduced){
+        var hv = document.getElementById("heroVideo");
+        var ho = document.getElementById("heroOverlay");
+        hv.src = s.hero_video;
+        hv.hidden = false; ho.hidden = false;
+        document.querySelector(".hero").classList.add("has-video");
+        hv.play().catch(function(){});
+      }
+    }
+
+    fetch("/content/bundles.json").then(function(r){ return r.json(); })
+      .then(renderBundles)
+      .catch(function(){ document.getElementById("bundels").style.display = "none"; });
+
+    fetch("/content/products.json").then(function(r){ return r.json(); })
+      .then(renderProducts)
+      .catch(function(){ renderProducts(FALLBACK_PRODUCTS); });
+
+    fetch("/content/site.json").then(function(r){ return r.json(); })
+      .then(applySite)
+      .catch(function(){});
+  })();
+  </script>
+</body>
+</html>

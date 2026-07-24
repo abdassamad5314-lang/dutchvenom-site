@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#DDD8C9"/>
+  <g fill="#C4BEAC">
+    <path d="M0 0h40l60 100-60 100H0l60-100Z" opacity="0.35"/>
+    <circle cx="400" cy="430" r="190" opacity="0.45"/>
+    <path d="M400 300c-70 0-120 55-120 130s50 130 120 130 120-55 120-130-50-130-120-130Zm0 40c45 0 80 40 80 90s-35 90-80 90-80-40-80-90 35-90 80-90Z" opacity="0.6"/>
+    <path d="M360 400l40 60 40-60-40 110Z" opacity="0.9"/>
+  </g>
+  <text x="400" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="bold" letter-spacing="6" fill="#7d7663">DV CROPPED</text>
+  <text x="400" y="885" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" letter-spacing="4" fill="#7d7663">HOODIE / BONE</text>
+  <text x="400" y="945" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="2" fill="#7d7663" opacity="0.7">VERVANG DEZE FOTO VIA HET ADMIN-PANEEL</text>
+</svg>
