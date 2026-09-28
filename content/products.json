@@ -11,7 +11,7 @@
       "oude_prijs": 119.95,
       "link": "https://www.dutchvenom.nl",
       "video": "",
-      "naam": "DV Signature Tracksuit — Black"
+      "naam": "DV men Signature Tracksuit — Black"
     },
     {
       "badge": "Nieuw",
@@ -24,7 +24,7 @@
       "oude_prijs": null,
       "link": "https://www.dutchvenom.nl",
       "video": "",
-      "naam": "DV Signature Tracksuit — Forest"
+      "naam": "DV men Signature Tracksuit — Forest"
     },
     {
       "badge": "",
@@ -37,7 +37,7 @@
       "oude_prijs": "",
       "link": "https://www.dutchvenom.nl",
       "video": "",
-      "naam": "DV Signature Tracksuit — red"
+      "naam": "DV men Signature Tracksuit — red"
     },
     {
       "badge": "Sale",
@@ -58,12 +58,12 @@
       "uitverkocht": false,
       "beschrijving": "High-waist jogger met tapered fit. Combineert met de cropped hoodie voor de complete set.",
       "afbeelding": "/images/product-5.svg",
-      "prijs": 49.95,
+      "prijs": 89.95,
       "categorie": "Dames",
       "oude_prijs": null,
       "link": "https://www.dutchvenom.nl",
       "video": "",
-      "naam": "DV Jogger — Charcoal"
+      "naam": "DV women Signature Tracksuit — Black"
     },
     {
       "badge": "",
@@ -71,12 +71,22 @@
       "uitverkocht": true,
       "beschrijving": "Klassieke 6-panel cap met geborduurde slang. One size, verstelbaar.",
       "afbeelding": "/images/product-6.svg",
-      "prijs": 24.95,
-      "categorie": "Accessoires",
+      "prijs": 89.95,
+      "categorie": "Dames",
       "oude_prijs": null,
       "link": "https://www.dutchvenom.nl",
       "video": "",
-      "naam": "DV Venom Cap"
+      "naam": "DV women Signature Tracksuit — Red"
+    },
+    {
+      "categorie": "Dames",
+      "uitverkocht": false,
+      "link": "https://www.dutchvenom.nl",
+      "naam": "DV women Signature Tracksuit — Red",
+      "prijs": 89.95,
+      "alt_tekst": "Zwart trainingspak met logo",
+      "beschrijving": "hmmm",
+      "afbeelding": "/images/uploads/hf_20260917_141859_ee0c3884-e2e2-46c5-b404-263b6dd63c55.png"
     }
   ]
 }
