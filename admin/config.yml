@@ -59,7 +59,29 @@ collections:
               - { label: "Beschrijving", name: "beschrijving", widget: "text" }
               - { label: "Badge (bijv. Nieuw / Sale / Bestseller)", name: "badge", widget: "string", required: false }
               - { label: "Uitverkocht", name: "uitverkocht", widget: "boolean", default: false }
-              - { label: "Link (naar bestelpagina)", name: "link", widget: "string", default: "https://www.dutchvenom.nl" }
+              - label: "Extra foto's (productpagina)"
+                name: "extra_fotos"
+                widget: "list"
+                required: false
+                hint: "Worden als kleine foto's onder de hoofdfoto getoond. Bijv. voorkant, achterkant, detail."
+                field: { label: "Foto", name: "foto", widget: "image" }
+              - label: "Maten"
+                name: "maten"
+                widget: "select"
+                multiple: true
+                options: ["XS", "S", "M", "L", "XL", "XXL", "One size"]
+                default: ["S", "M", "L", "XL"]
+                hint: "Welke maten de klant kan kiezen. Accessoires: kies alleen 'One size'."
+              - label: "Betaallinks per maat (Stripe)"
+                name: "betaallinks"
+                widget: "list"
+                required: false
+                summary: "{{fields.maat}} → {{fields.link}}"
+                hint: "Per maat de Stripe-betaallink (begint met https://buy.stripe.com/). Maat zonder link = klant kan bestellen via e-mail."
+                fields:
+                  - { label: "Maat", name: "maat", widget: "select", options: ["XS", "S", "M", "L", "XL", "XXL", "One size"] }
+                  - { label: "Stripe-betaallink", name: "link", widget: "string", pattern: ["^https://", "Moet beginnen met https://"] }
+              - { label: "Adres van de pagina (optioneel)", name: "slug", widget: "string", required: false, hint: "Leeg = automatisch uit de naam, bijv. /product/dv-men-signature-tracksuit-black/. Let op: wijzig je de naam of dit veld, dan verandert het adres van de pagina." }
 
   - name: "instellingen"
     label: "⚙️ Site-instellingen"

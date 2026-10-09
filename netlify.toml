@@ -1,5 +1,7 @@
 [build]
   publish = "."
+  # Maakt bij elke deploy de productpagina's (/product/...), /bedankt/ en sitemap.xml
+  command = "node scripts/build.js"
 
 [[headers]]
   for = "/images/*"

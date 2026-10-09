@@ -11,6 +11,7 @@ Complete website voor dutchvenom.nl met admin-paneel om zelf producten, prijzen,
 - `admin/` — het beheerpaneel (bereikbaar op jouwsite.nl/admin na installatie)
 - `images/` — placeholder productfoto's (vervang deze via het admin-paneel)
 - `netlify.toml`, `robots.txt`, `sitemap.xml` — hosting- en SEO-instellingen
+- `scripts/build.js` — maakt bij elke publicatie de productpagina's, de bedankpagina en de sitemap
 
 ## ⚠️ Belangrijkste valkuil bij het uploaden
 
@@ -23,7 +24,7 @@ Controle achteraf: kijk in GitHub of Netlify's deploy file browser — je moet d
 Het admin-paneel werkt via GitHub + Netlify. Volg deze stappen één keer:
 
 1. **GitHub**: maak een gratis account op github.com en maak een nieuwe repository (bijv. "dutchvenom-site"). Klik "uploading an existing file" en sleep de **inhoud** van deze map erin (zie waarschuwing hierboven).
-2. **Netlify**: maak een gratis account op netlify.com → "Add new site" → "Import an existing project" → kies je GitHub-repository. Build command leeg laten, publish directory = een enkele punt `.`. Klik Deploy. Je site staat nu live op een netlify.app-adres.
+2. **Netlify**: maak een gratis account op netlify.com → "Add new site" → "Import an existing project" → kies je GitHub-repository. Build command en publish directory worden automatisch uit `netlify.toml` gehaald. Klik Deploy. Je site staat nu live op een netlify.app-adres.
 3. **Admin activeren**: in Netlify ga je naar Site configuration → Identity → klik "Enable Identity". Daarna: Identity → Services → klik "Enable Git Gateway".
 4. **Jezelf uitnodigen**: Identity → "Invite users" → vul je eigen e-mailadres in. Open de mail en stel een wachtwoord in.
 5. **Klaar**: ga naar `jouwsite.netlify.app/admin` en log in. Je ziet nu "Bundels", "Producten" en "Site-instellingen".
@@ -41,6 +42,33 @@ In Netlify: Domain management → Add custom domain → volg de stappen om dutch
 
 Foto's/video's upload je direct in het paneel; ze komen automatisch in `images/uploads/` terecht.
 
+## Productpagina's & bestellen (Stripe / iDEAL)
+
+Elk product heeft een eigen pagina op `/product/<naam-van-het-product>/`, met foto's, maatkeuze en een bestelknop. Die pagina's worden bij elke publicatie automatisch opnieuw gemaakt (door `scripts/build.js`), dus een nieuw product in het admin-paneel krijgt vanzelf een pagina.
+
+**Hoe de bestelknop werkt**
+- Klant kiest een maat → knop "Bestellen" → betaalpagina van Stripe (iDEAL, creditcard, Apple Pay).
+- Heeft een maat (nog) geen betaallink, dan wordt de knop "Bestel via e-mail" en opent er een mail met product en maat.
+- Uitverkocht aangevinkt = knop uitgeschakeld.
+
+**Eenmalig instellen in Stripe**
+1. Maak een account op stripe.com en rond de verificatie af (bedrijfsgegevens, KvK, bankrekening).
+2. Settings → Payment methods → zet **iDEAL** aan (en eventueel Bancontact voor België).
+3. Settings → Notifications → zet e-mail aan bij geslaagde betalingen, zodat je elke bestelling meteen ziet.
+
+**Per product en per maat een betaallink maken**
+1. Stripe-dashboard → **Payment Links** → **New**.
+2. Product toevoegen met de maat in de naam, bijv. *DV Signature Tracksuit — Black — M*, prijs €89,95.
+3. Bij de opties: **Collect customers' addresses** → verzendadres, landen Nederland (en België).
+4. Verzendkosten: voeg een verzendtarief toe als het product onder de gratis-verzendgrens valt (bijv. de tas).
+5. Tabblad **After payment** → kies doorsturen naar je eigen pagina: `https://www.dutchvenom.nl/bedankt/`.
+6. Optioneel bij limited drops: beperk het aantal betalingen per link (= je voorraad voor die maat).
+7. Kopieer de link (`https://buy.stripe.com/...`).
+
+**Link invullen**: admin-paneel → Producten → product → *Betaallinks per maat (Stripe)* → maat kiezen + link plakken → Publish.
+
+In Stripe zie je bij elke betaling ook een *client reference ID* zoals `dv-men-signature-tracksuit-black-M` (product + maat) als extra controle.
+
 ## Video's (Higgsfield-workflow)
 
 De site ondersteunt video op twee plekken, beide via het admin-paneel:
@@ -53,6 +81,6 @@ Workflow: maak je clip in Higgsfield → download als mp4 → upload in het pane
 ## Belangrijk om te weten
 
 - **Snelste route zonder admin**: de map direct naar Netlify slepen (drag & drop op app.netlify.com/drop) laat de site werken, maar dan werkt het admin-paneel niet — dat vereist de GitHub-route hierboven.
-- **Bestellingen/afrekenen**: dit is een etalage-site die leads genereert. De "Bekijk"-knoppen linken nu naar dutchvenom.nl — stel per product/bundel een eigen link in (bestelpagina, WhatsApp, Instagram DM).
-- **OG-afbeelding**: upload een foto als `images/og-image.jpg` (1200×630px) voor het deel-plaatje op social media.
+- **Bestellingen/afrekenen**: zie "Productpagina's & bestellen" hierboven. De bundels hebben nog een eigen link-veld (bijv. ook een Stripe-betaallink).
+- **OG-afbeelding**: `images/og-image.jpg` (1200×630px) is het deel-plaatje op social media. Vervang het bestand om het te wijzigen.
 - **Google Search Console**: meld je site aan op search.google.com/search-console en dien `sitemap.xml` in voor snellere indexering.

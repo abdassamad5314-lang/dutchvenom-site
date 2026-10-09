@@ -270,6 +270,9 @@
     .card-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
     .card-cat{font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--moss)}
     .card-title{font-family:"Archivo",sans-serif;font-weight:800;font-size:18.5px;line-height:1.2}
+    .card-title a{text-decoration:none}
+    .card-title a:hover{color:var(--toxin)}
+    a.card-img{display:block}
     .card-desc{font-size:14.5px;color:var(--bone-dim);flex:1}
     .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
     .price{font-family:"Space Mono",monospace;font-weight:700;font-size:17px;color:var(--toxin)}
@@ -604,12 +607,51 @@
       {naam:"DV Cropped Hoodie — Bone",categorie:"Dames",prijs:59.95,oude_prijs:null,afbeelding:"/images/product-3.svg",alt_tekst:"Cropped hoodie in bone white",beschrijving:"Cropped fit hoodie in bone white. Zachte binnenkant, geborduurd logo.",badge:"",uitverkocht:false,link:"#"}
     ]};
 
+    /* ---------- foto's licht maken via Netlify Image CDN ----------
+       Foto's uit het admin-paneel kunnen vele MB's groot zijn. Op de live site
+       vraagt de browser via /.netlify/images een verkleinde versie op (WebP/AVIF,
+       juiste breedte). Lukt dat niet (bijv. lokaal testen), dan valt hij terug
+       op het originele bestand. SVG's en externe links blijven ongemoeid. */
+    var useImageCdn = location.protocol === "https:" && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    function cdn(url, w){
+      if(!useImageCdn || !url || url.charAt(0) !== "/" || /\.svg(\?|$)/i.test(url)) return url;
+      return "/.netlify/images?url=" + encodeURIComponent(url) + "&w=" + w + "&q=75";
+    }
+    function setImg(img, url, sizes){
+      img.src = cdn(url, 800) || "";
+      if(cdn(url, 800) !== url){
+        img.srcset = [480, 800, 1200].map(function(w){ return cdn(url, w) + " " + w + "w"; }).join(", ");
+        img.sizes = sizes;
+        img.addEventListener("error", function onErr(){
+          img.removeEventListener("error", onErr);
+          img.removeAttribute("srcset"); img.src = url;
+        });
+      }
+    }
+
+    /* productpagina-adressen — LET OP: gelijk houden aan slugify in scripts/build.js */
+    function slugify(s){
+      return String(s || "")
+        .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "product";
+    }
+    function assignSlugs(list){
+      var used = {};
+      return list.map(function(p){
+        var base = slugify(p.slug || p.naam), s = base, n = 2;
+        while(used[s]) s = base + "-" + n++;
+        used[s] = true;
+        return s;
+      });
+    }
+
     function euro(n){
       return "€" + Number(n).toFixed(2).replace(".", ",");
     }
 
     function renderProducts(data){
-      var products = (data && data.products) || [];
+      var products = ((data && data.products) || []).filter(function(p){ return p && p.naam; });
+      var slugs = assignSlugs(products);
       var grid = document.getElementById("productGrid");
       var filterBox = document.getElementById("filters");
 
@@ -645,15 +687,16 @@
           var mediaHtml = hasVideo
             ? '<video autoplay muted loop playsinline preload="metadata"></video>'
             : '<img loading="lazy" width="800" height="1000">';
+          var url = "/product/" + slugs[i] + "/";
           card.innerHTML =
-            '<div class="card-img">' + badgeHtml + mediaHtml + '</div>' +
+            '<a class="card-img" tabindex="-1" aria-hidden="true">' + badgeHtml + mediaHtml + '</a>' +
             '<div class="card-body">' +
               '<p class="card-cat"></p>' +
-              '<h3 class="card-title"></h3>' +
+              '<h3 class="card-title"><a></a></h3>' +
               '<p class="card-desc"></p>' +
               '<div class="card-foot">' +
                 '<p class="price"></p>' +
-                '<a class="card-btn" target="_blank" rel="noopener"></a>' +
+                '<a class="card-btn"></a>' +
               '</div>' +
             '</div>';
 
@@ -661,16 +704,18 @@
           if(hasVideo){
             var vid = card.querySelector("video");
             vid.src = p.video;
-            if(p.afbeelding) vid.poster = p.afbeelding;
+            if(p.afbeelding) vid.poster = cdn(p.afbeelding, 800);
             vid.setAttribute("aria-label", p.alt_tekst || p.naam || "");
           } else {
             var img = card.querySelector("img");
-            img.src = p.afbeelding || "";
+            setImg(img, p.afbeelding || "", "(max-width:680px) 92vw, (max-width:980px) 46vw, 380px");
             img.alt = p.alt_tekst || p.naam || "";
           }
           if(p.badge && !p.uitverkocht) card.querySelector(".badge").textContent = p.badge;
           card.querySelector(".card-cat").textContent = p.categorie || "";
-          card.querySelector(".card-title").textContent = p.naam || "";
+          var titleLink = card.querySelector(".card-title a");
+          titleLink.textContent = p.naam || ""; titleLink.href = url;
+          card.querySelector(".card-img").href = url;
           card.querySelector(".card-desc").textContent = p.beschrijving || "";
           var priceEl = card.querySelector(".price");
           if(p.oude_prijs){
@@ -679,8 +724,9 @@
           }
           priceEl.appendChild(document.createTextNode(euro(p.prijs)));
           var a = card.querySelector(".card-btn");
-          if(p.uitverkocht){ a.textContent = "Op = op"; a.removeAttribute("href"); a.style.opacity=".5"; a.style.pointerEvents="none"; }
-          else { a.textContent = "Bekijk"; a.href = p.link || "#"; }
+          a.href = url;
+          a.textContent = p.uitverkocht ? "Uitverkocht" : "Bekijk";
+          a.setAttribute("aria-label", (p.uitverkocht ? "Uitverkocht: " : "Bekijk ") + (p.naam || ""));
 
           grid.appendChild(card);
         });
@@ -736,8 +782,9 @@
           '</div></div>';
 
         var imgs = scene.querySelectorAll("img");
-        imgs[0].src = b.foto_links || ""; imgs[0].alt = b.alt_links || b.naam || "";
-        imgs[1].src = b.foto_rechts || ""; imgs[1].alt = b.alt_rechts || b.naam || "";
+        var bSizes = "(max-width:680px) 42vw, 300px";
+        setImg(imgs[0], b.foto_links || "", bSizes); imgs[0].alt = b.alt_links || b.naam || "";
+        setImg(imgs[1], b.foto_rechts || "", bSizes); imgs[1].alt = b.alt_rechts || b.naam || "";
         scene.querySelector(".b-sub").textContent = b.ondertitel || "";
         scene.querySelector("h3").textContent = b.naam || "";
         scene.querySelector(".b-desc").textContent = b.beschrijving || "";
