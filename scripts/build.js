@@ -4,8 +4,9 @@
  *
  * Maakt uit content/products.json en content/site.json:
  *   - /product/<slug>/index.html   één pagina per product (met maatkeuze + bestelknop)
- *   - /bedankt/index.html          pagina waar Stripe na betaling naartoe stuurt
+ *   - /bedankt/index.html          pagina waar Mollie na betaling naartoe stuurt (toont de status)
  *   - /sitemap.xml                 met de homepage én alle productpagina's
+ *   - netlify/shared/catalog.mjs   prijzen/maten voor de Mollie-afrekenfunctie
  *
  * Geen extra pakketten nodig (alleen Node). Lokaal testen: `node scripts/build.js`.
  * De gegenereerde mappen staan in .gitignore; ze worden bij elke deploy opnieuw gemaakt.
@@ -20,6 +21,17 @@ const SITE_URL = "https://www.dutchvenom.nl";
 const readJson = (rel) => JSON.parse(fs.readFileSync(path.join(ROOT, rel), "utf8"));
 const site = readJson("content/site.json");
 const products = (readJson("content/products.json").products || []).filter((p) => p && p.naam);
+
+const shipping = {
+  verzendkosten: Number(site.verzendkosten != null ? site.verzendkosten : 4.95),
+  gratis_verzending_vanaf: Number(site.gratis_verzending_vanaf != null ? site.gratis_verzending_vanaf : 75),
+  verzendlanden: Array.isArray(site.verzendlanden) && site.verzendlanden.length ? site.verzendlanden.map(String) : ["NL"],
+};
+const LANDEN = { NL: "Nederland", BE: "België", DE: "Duitsland", FR: "Frankrijk", LU: "Luxemburg" };
+function shipCents(prijs) {
+  const sub = Math.round(Number(prijs) * 100), drempel = Math.round(shipping.gratis_verzending_vanaf * 100);
+  return drempel > 0 && sub >= drempel ? 0 : Math.round(shipping.verzendkosten * 100);
+}
 
 /* ---------- hulpfuncties ---------- */
 
@@ -46,7 +58,6 @@ const hasPrice = (n) => n !== null && n !== undefined && n !== "" && !isNaN(Numb
 const isRaster = (u) => /^\//.test(u || "") && !/\.svg(\?|$)/i.test(u);
 const cdn = (u, w) => "/.netlify/images?url=" + encodeURIComponent(u) + "&w=" + w + "&q=75";
 const abs = (u) => (/^https?:\/\//.test(u) ? u : SITE_URL + (u || ""));
-const safeUrl = (u) => (/^https:\/\//i.test(String(u || "").trim()) ? String(u).trim() : "");
 
 // <img> die op Netlify via de Image CDN laadt en anders terugvalt op het origineel
 function img(u, alt, sizes, extra) {
@@ -128,6 +139,27 @@ h1{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:108%;font-size:
 .fit{font-size:14px;color:var(--bone-dim);margin-bottom:24px}
 .order .btn{width:100%}
 .order-note{font-size:13.5px;color:var(--moss);margin-top:12px;min-height:1.6em;text-align:center}
+.checkout{margin-top:26px;padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--serpent)}
+.checkout h2{font-family:"Space Mono",monospace;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f2 label{display:flex;flex-direction:column;gap:6px;font-size:13.5px;font-weight:500;color:var(--bone-dim)}
+.f2 label.full{grid-column:1/-1}
+.f2 em{font-style:normal;color:var(--moss)}
+.f2 small{font-size:12px;color:var(--moss)}
+.f2 input,.f2 select{font:inherit;font-size:16px;color:var(--bone);background:var(--nightscale);border:1px solid var(--line);border-radius:10px;padding:12px 13px;width:100%}
+.f2 input:focus,.f2 select:focus{outline:none;border-color:var(--toxin)}
+.f2 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.sum{margin:22px 0 18px;border-top:1px solid var(--line)}
+.sum div{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.sum dt{color:var(--bone-dim)}
+.sum dd{font-family:"Space Mono",monospace;font-weight:700}
+.sum .tot dt,.sum .tot dd{color:var(--bone);font-size:16px}
+.sum .tot dd{color:var(--toxin)}
+.checkout .btn{width:100%}
+.checkout .btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+.form-msg{color:#E8A08A;font-size:14px;margin-top:12px;min-height:1.2em;text-align:center}
+.form-msg a{color:var(--toxin)}
+.pay-note{font-size:12.5px;color:var(--moss);text-align:center;margin-top:4px}
 .trust{list-style:none;margin:28px 0 0;border-top:1px solid var(--line)}
 .trust li{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);font-size:14.5px}
 .trust svg{width:20px;height:20px;flex:none;color:var(--toxin)}
@@ -151,6 +183,7 @@ details p{color:var(--bone-dim);font-size:15px;padding:0 0 18px}
 @media (max-width:900px){
   .pdp{grid-template-columns:1fr;gap:28px}
   .info{position:static}
+  .f2{grid-template-columns:1fr}
   .rgrid{grid-template-columns:repeat(2,1fr)}
   .rgrid .rcard:nth-child(3){display:none}
   .mobile-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(12,19,16,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .25s}
@@ -215,11 +248,6 @@ function productPage(p, i) {
   const photos = [p.afbeelding].concat(Array.isArray(p.extra_fotos) ? p.extra_fotos : [])
     .map((x) => (x && typeof x === "object" ? x.foto : x)).filter(Boolean);
   const sizes = (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String);
-  const links = {};
-  (Array.isArray(p.betaallinks) ? p.betaallinks : []).forEach((l) => {
-    const u = safeUrl(l && l.link);
-    if (l && l.maat && u) links[String(l.maat)] = u;
-  });
   const sold = !!p.uitverkocht;
   const single = sizes.length === 1;
   const priceHtml = (hasPrice(p.oude_prijs) ? `<s>${euro(p.oude_prijs)}</s>` : "") + euro(p.prijs);
@@ -252,7 +280,10 @@ function productPage(p, i) {
       availability: sold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock" },
   };
 
-  const cfg = { slug: p._slug, naam: p.naam, links, email: site.email || "", sold, single, prijs: euro(p.prijs) };
+  const ship = shipCents(p.prijs);
+  const cfg = { slug: p._slug, naam: p.naam, email: site.email || "", sold, single, prijs: euro(p.prijs),
+    verzending: ship === 0 ? "Gratis" : euro(ship / 100), totaal: euro((Math.round(Number(p.prijs) * 100) + ship) / 100) };
+  const landOptions = shipping.verzendlanden.map((c) => `<option value="${esc(c)}">${esc(LANDEN[c] || c)}</option>`).join("");
 
   const body = `
 <div class="wrap">
@@ -274,14 +305,36 @@ function productPage(p, i) {
       <p class="fit">${single ? "Eén maat, verstelbaar." : "Tussen twee maten? Neem de kleinste voor een normale pasvorm, je gewone maat voor oversized."}</p>
 
       <div class="order">
-        <a class="btn" id="orderBtn" aria-disabled="true" role="button">${sold ? "Uitverkocht" : single ? "Bestellen — " + euro(p.prijs) : "Kies eerst je maat"}</a>
-        <p class="order-note" id="orderNote" aria-live="polite">${sold ? "Dit item komt niet terug. Volg ons op Instagram voor nieuwe drops." : "Veilig betalen met iDEAL via Stripe"}</p>
+        <a class="btn" id="orderBtn" aria-disabled="true" role="button" href="#bestellen">${sold ? "Uitverkocht" : single ? "Bestellen — " + euro(p.prijs) : "Kies eerst je maat"}</a>
+        <p class="order-note" id="orderNote" aria-live="polite">${sold ? "Dit item komt niet terug. Volg ons op Instagram voor nieuwe drops." : "Veilig betalen met iDEAL via Mollie"}</p>
       </div>
+      ${sold ? "" : `
+      <form class="checkout" id="bestellen" hidden novalidate>
+        <h2>Bezorggegevens</h2>
+        <div class="f2">
+          <label class="full">Naam<input name="naam" autocomplete="name" required maxlength="80"></label>
+          <label class="full">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120"><small>Voor je bevestiging en track &amp; trace</small></label>
+          <label class="full">Straat en huisnummer<input name="adres" autocomplete="street-address" required maxlength="120"></label>
+          <label>Postcode<input name="postcode" autocomplete="postal-code" required maxlength="12"></label>
+          <label>Plaats<input name="plaats" autocomplete="address-level2" required maxlength="60"></label>
+          <label>Land<select name="land" autocomplete="country">${landOptions}</select></label>
+          <label><span>Telefoon <em>(optioneel)</em></span><input name="telefoon" type="tel" autocomplete="tel" maxlength="25"></label>
+          <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <dl class="sum">
+          <div><dt id="sumProduct">${esc(p.naam)}</dt><dd>${euro(p.prijs)}</dd></div>
+          <div><dt>Verzending</dt><dd>${cfg.verzending}</dd></div>
+          <div class="tot"><dt>Totaal</dt><dd>${cfg.totaal}</dd></div>
+        </dl>
+        <button class="btn" type="submit" id="payBtn">Afrekenen — ${cfg.totaal}</button>
+        <p class="form-msg" id="formMsg" role="alert"></p>
+        <p class="pay-note">Je gaat naar de beveiligde betaalpagina van Mollie (o.a. iDEAL).</p>
+      </form>`}
 
       <ul class="trust">
         <li>${ICON.truck}<span>${esc(site.usp_2 || "Snelle verzending")}</span></li>
         <li>${ICON.ret}<span>${esc(site.usp_3 || "14 dagen retourrecht")}</span></li>
-        <li>${ICON.lock}<span>Betalen met iDEAL, creditcard of Apple Pay</span></li>
+        <li>${ICON.lock}<span>Veilig betalen via Mollie, o.a. met iDEAL</span></li>
       </ul>
       <details><summary>Maat &amp; pasvorm</summary><p>Onze tracksuits hebben een oversized fit. Wil je het strakker, bestel dan een maat kleiner. Twijfel je? Mail ons${site.email ? " op " + esc(site.email) : ""} en we helpen je kiezen.</p></details>
       <details><summary>Verzending &amp; retour</summary><p>${esc(site.aankondiging || "")}${site.aankondiging ? ". " : ""}${esc(site.usp_3 || "")}: items ongedragen en met labels terugsturen. Mail ons en we regelen het.</p></details>
@@ -300,24 +353,52 @@ function productPage(p, i) {
   var first = document.querySelector(".sizes button");
   var chosen = C.single && first ? first.getAttribute("data-size") : null;
 
+  var form = document.getElementById("bestellen"), msg = document.getElementById("formMsg"), payBtn = document.getElementById("payBtn");
+
   function update(){
     if(C.sold) return;
-    if(!chosen){ btn.setAttribute("aria-disabled","true"); btn.removeAttribute("href"); btn.textContent = "Kies eerst je maat"; return; }
-    var link = C.links[chosen];
+    if(!chosen){ btn.setAttribute("aria-disabled","true"); btn.textContent = "Kies eerst je maat"; if(form) form.hidden = true; return; }
     btn.removeAttribute("aria-disabled");
-    if(link){
-      var ref = (C.slug + "-" + chosen).replace(/[^A-Za-z0-9_-]/g, "-").slice(0, 200);
-      btn.href = link + (link.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=" + encodeURIComponent(ref);
-      btn.textContent = "Bestellen — " + C.prijs;
-      note.textContent = "Veilig betalen met iDEAL via Stripe";
-    } else {
-      btn.href = "mailto:" + C.email + "?subject=" + encodeURIComponent("Bestelling: " + C.naam + " — maat " + chosen) +
-        "&body=" + encodeURIComponent("Hoi Dutch Venom,\\n\\nIk wil graag bestellen:\\n" + C.naam + "\\nMaat: " + chosen + "\\n\\nNaam:\\nAdres:\\nPostcode + plaats:\\n\\nGroet,");
-      btn.textContent = "Bestel via e-mail";
-      note.textContent = "Online betalen voor deze maat volgt binnenkort.";
-    }
+    btn.textContent = "Bestellen — " + C.prijs;
+    document.getElementById("sumProduct").textContent = C.naam + " · maat " + chosen;
     var mb = document.getElementById("mbSize"); if(mb) mb.textContent = "Maat " + chosen;
   }
+  function openForm(){
+    if(!form || !chosen) return;
+    form.hidden = false;
+    form.scrollIntoView({behavior:"smooth", block:"start"});
+    setTimeout(function(){ var f = form.querySelector("input"); if(f) f.focus({preventScroll:true}); }, 350);
+  }
+  btn.addEventListener("click", function(e){ e.preventDefault(); openForm(); });
+
+  function mailFallback(){
+    return "mailto:" + C.email + "?subject=" + encodeURIComponent("Bestelling: " + C.naam + " — maat " + chosen) +
+      "&body=" + encodeURIComponent("Hoi Dutch Venom,\\n\\nIk wil graag bestellen:\\n" + C.naam + "\\nMaat: " + chosen + "\\n\\nNaam:\\nAdres:\\nPostcode + plaats:\\n\\nGroet,");
+  }
+  if(form) form.addEventListener("input", function(){ if(msg.textContent && !payBtn.disabled) msg.textContent = ""; });
+  if(form) form.addEventListener("submit", function(e){
+    e.preventDefault();
+    msg.textContent = "";
+    var bad = Array.prototype.filter.call(form.querySelectorAll("[required]"), function(el){ return !el.value.trim(); });
+    if(bad.length){ msg.textContent = "Vul alle verplichte velden in."; bad[0].focus(); return; }
+    var data = { slug: C.slug, maat: chosen };
+    Array.prototype.forEach.call(form.elements, function(el){ if(el.name) data[el.name] = el.value; });
+    payBtn.disabled = true; var label = payBtn.textContent; payBtn.textContent = "Even geduld…";
+    fetch("/.netlify/functions/checkout", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {status: r.status, body: j}; }); })
+      .then(function(res){
+        if(res.body && res.body.checkoutUrl){ window.location.href = res.body.checkoutUrl; return; }
+        payBtn.disabled = false; payBtn.textContent = label;
+        if(res.status === 503 || res.status === 404){
+          msg.innerHTML = "";
+          msg.appendChild(document.createTextNode("Online betalen staat nog niet aan. "));
+          var a = document.createElement("a"); a.href = mailFallback(); a.textContent = "Bestel via e-mail"; msg.appendChild(a);
+        } else {
+          msg.textContent = (res.body && res.body.error) || "Er ging iets mis. Probeer het opnieuw.";
+        }
+      })
+      .catch(function(){ payBtn.disabled = false; payBtn.textContent = label; msg.textContent = "Geen verbinding. Probeer het opnieuw."; });
+  });
 
   document.querySelectorAll(".sizes button").forEach(function(b){
     b.addEventListener("click", function(){
@@ -344,7 +425,8 @@ function productPage(p, i) {
   var bar = document.getElementById("mobileBar"), mbBtn = document.getElementById("mbBtn");
   function toggleBar(){
     if(!bar) return;
-    var off = btn.getBoundingClientRect().bottom < 0;
+    var formInView = form && !form.hidden && form.getBoundingClientRect().top < window.innerHeight && form.getBoundingClientRect().bottom > 0;
+    var off = btn.getBoundingClientRect().bottom < 0 && !formInView;
     bar.classList.toggle("show", off); bar.setAttribute("aria-hidden", off ? "false" : "true");
   }
   window.addEventListener("scroll", toggleBar, {passive:true});
@@ -352,7 +434,7 @@ function productPage(p, i) {
   if(mbBtn) mbBtn.addEventListener("click", function(e){
     e.preventDefault();
     if(C.sold) return;
-    if(chosen && btn.getAttribute("href")){ btn.click(); return; }
+    if(chosen){ openForm(); return; }
     document.querySelector(".size-head").scrollIntoView({behavior:"smooth", block:"center"});
   });
 })();
@@ -364,14 +446,48 @@ function productPage(p, i) {
 /* ---------- bedankpagina ---------- */
 
 function thanksPage() {
+  const formFields = ["bestelnummer", "product", "maat", "prijs", "verzending", "totaal", "naam", "email", "telefoon",
+    "adres", "postcode", "plaats", "land", "mollie_id", "betaalmethode"];
   const body = `
 <div class="wrap" style="max-width:720px;text-align:center;padding-top:110px">
-  <p class="cat" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--toxin);margin-bottom:14px">Bestelling ontvangen</p>
-  <h1 style="font-family:Archivo,sans-serif;font-weight:900;font-stretch:108%;font-size:clamp(34px,5vw,56px);line-height:1;text-transform:uppercase;margin-bottom:20px">Bedankt — je venom is onderweg</h1>
-  <p style="color:var(--bone-dim);margin-bottom:34px">Je betaling is gelukt. Je ontvangt een bevestiging per e-mail. We pakken je bestelling zo snel mogelijk in${site.email ? `; vragen kun je mailen naar <a href="mailto:${esc(site.email)}" style="color:var(--toxin)">${esc(site.email)}</a>` : ""}.</p>
-  <a class="btn" href="/#collectie">Verder shoppen</a>
-</div>`;
-  return shell({ title: "Bedankt voor je bestelling | Dutch Venom", description: "Je bestelling bij Dutch Venom is ontvangen.",
+  <p id="tCat" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--toxin);margin-bottom:14px">Bestelling</p>
+  <h1 id="tTitle" style="font-family:Archivo,sans-serif;font-weight:900;font-stretch:108%;font-size:clamp(34px,5vw,56px);line-height:1;text-transform:uppercase;margin-bottom:20px">Bedankt!</h1>
+  <p id="tText" style="color:var(--bone-dim);margin-bottom:34px">We controleren je betaling…</p>
+  <a class="btn" id="tBtn" href="/#collectie">Verder shoppen</a>
+  <p style="color:var(--moss);font-size:14px;margin-top:28px">${site.email ? `Vragen? Mail <a href="mailto:${esc(site.email)}" style="color:var(--toxin)">${esc(site.email)}</a>` : ""}</p>
+</div>
+<!-- Netlify Forms: hier komen betaalde bestellingen binnen (ingevuld door de Mollie-webhook) -->
+<form name="bestellingen" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input name="bot-field">
+  ${formFields.map((f) => `<input name="${f}">`).join("\n  ")}
+</form>
+<script>
+(function(){
+  var id = new URLSearchParams(location.search).get("id");
+  var cat = document.getElementById("tCat"), title = document.getElementById("tTitle"), text = document.getElementById("tText"), b = document.getElementById("tBtn");
+  function show(c, t, x){ cat.textContent = c; title.textContent = t; text.textContent = x; }
+  if(!id){ show("Bestelling", "Bedankt!", "Je ontvangt een bevestiging per e-mail zodra je betaling binnen is."); return; }
+  var tries = 0;
+  function check(){
+    fetch("/.netlify/functions/order-status?id=" + encodeURIComponent(id)).then(function(r){ return r.json(); }).then(function(j){
+      var ref = j.ref ? " (" + j.ref + ")" : "";
+      if(j.status === "paid" || j.status === "authorized"){
+        show("Bestelling ontvangen" + ref, "Bedankt — je venom is onderweg", "Je betaling is gelukt" + (j.product ? " voor " + j.product + (j.maat ? ", maat " + j.maat : "") : "") + ". Je krijgt een bevestiging per e-mail en we pakken je bestelling zo snel mogelijk in.");
+      } else if(j.status === "open" || j.status === "pending"){
+        if(tries++ < 6){ setTimeout(check, 2500); show("Even geduld" + ref, "Betaling wordt verwerkt", "We wachten op de bevestiging van je bank…"); return; }
+        show("Bijna klaar" + ref, "Betaling wordt verwerkt", "Je bank heeft je betaling nog niet bevestigd. Zodra dat gebeurt krijg je een e-mail.");
+      } else if(j.status === "canceled" || j.status === "expired" || j.status === "failed"){
+        show("Niet betaald" + ref, "Betaling niet gelukt", "Er is niets afgeschreven. Wil je het opnieuw proberen?");
+        b.textContent = "Opnieuw proberen"; b.href = j.slug ? "/product/" + j.slug + "/" : "/#collectie";
+      } else {
+        show("Bestelling", "Bedankt!", "Je ontvangt een bevestiging per e-mail zodra je betaling binnen is.");
+      }
+    }).catch(function(){ show("Bestelling", "Bedankt!", "Je ontvangt een bevestiging per e-mail zodra je betaling binnen is."); });
+  }
+  check();
+})();
+</script>`;
+  return shell({ title: "Je bestelling | Dutch Venom", description: "Status van je bestelling bij Dutch Venom.",
     canonical: SITE_URL + "/bedankt/", ogImage: SITE_URL + "/images/og-image.jpg", body, noindex: true });
 }
 
@@ -387,6 +503,16 @@ fs.rmSync(path.join(ROOT, "product"), { recursive: true, force: true });
 products.forEach((p, i) => write(`product/${p._slug}/index.html`, productPage(p, i)));
 write("bedankt/index.html", thanksPage());
 
+// Catalogus voor de Mollie-functies: prijzen komen hier vandaan, niet uit de browser.
+const catalog = {
+  site: shipping,
+  products: products.map((p) => ({
+    slug: p._slug, naam: p.naam, prijs: Number(p.prijs), uitverkocht: !!p.uitverkocht,
+    maten: (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String),
+  })),
+};
+write("netlify/shared/catalog.mjs", "// Automatisch gemaakt door scripts/build.js — niet handmatig aanpassen.\nexport default " + JSON.stringify(catalog, null, 2) + ";\n");
+
 const today = new Date().toISOString().slice(0, 10);
 const urls = [SITE_URL + "/"].concat(products.map((p) => SITE_URL + p._url));
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
@@ -395,5 +521,5 @@ ${urls.map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).joi
 </urlset>
 `);
 
-console.log(`Gebouwd: ${products.length} productpagina's, /bedankt/, sitemap.xml`);
+console.log(`Gebouwd: ${products.length} productpagina's, /bedankt/, sitemap.xml, catalog.mjs`);
 products.forEach((p) => console.log("  " + p._url));

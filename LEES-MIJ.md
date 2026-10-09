@@ -12,6 +12,7 @@ Complete website voor dutchvenom.nl met admin-paneel om zelf producten, prijzen,
 - `images/` — placeholder productfoto's (vervang deze via het admin-paneel)
 - `netlify.toml`, `robots.txt`, `sitemap.xml` — hosting- en SEO-instellingen
 - `scripts/build.js` — maakt bij elke publicatie de productpagina's, de bedankpagina en de sitemap
+- `netlify/functions/` — afrekenen via Mollie (checkout, webhook, betaalstatus)
 
 ## ⚠️ Belangrijkste valkuil bij het uploaden
 
@@ -42,32 +43,34 @@ In Netlify: Domain management → Add custom domain → volg de stappen om dutch
 
 Foto's/video's upload je direct in het paneel; ze komen automatisch in `images/uploads/` terecht.
 
-## Productpagina's & bestellen (Stripe / iDEAL)
+## Productpagina's & bestellen (Mollie / iDEAL)
 
-Elk product heeft een eigen pagina op `/product/<naam-van-het-product>/`, met foto's, maatkeuze en een bestelknop. Die pagina's worden bij elke publicatie automatisch opnieuw gemaakt (door `scripts/build.js`), dus een nieuw product in het admin-paneel krijgt vanzelf een pagina.
+Elk product heeft een eigen pagina op `/product/<naam-van-het-product>/`, met foto's, maatkeuze en een bestelformulier. Die pagina's worden bij elke publicatie automatisch opnieuw gemaakt (door `scripts/build.js`), dus een nieuw product in het admin-paneel krijgt vanzelf een pagina.
 
-**Hoe de bestelknop werkt**
-- Klant kiest een maat → knop "Bestellen" → betaalpagina van Stripe (iDEAL, creditcard, Apple Pay).
-- Heeft een maat (nog) geen betaallink, dan wordt de knop "Bestel via e-mail" en opent er een mail met product en maat.
-- Uitverkocht aangevinkt = knop uitgeschakeld.
+**Hoe bestellen werkt**
+1. Klant kiest een maat → "Bestellen" → vult naam, e-mail en bezorgadres in.
+2. De site maakt via Mollie een betaling aan. De prijs en verzendkosten komen uit het admin-paneel, niet uit de browser.
+3. Klant betaalt bij Mollie (iDEAL en alle andere methodes die je in Mollie aanzet) en komt terug op `/bedankt/`, die laat zien of de betaling gelukt is.
+4. Zodra Mollie meldt dat er betaald is, komt de bestelling (product, maat, adres, bedrag, bestelnummer) binnen in Netlify bij **Forms → bestellingen**, en krijg je een e-mail als je dat hebt ingesteld.
 
-**Eenmalig instellen in Stripe**
-1. Maak een account op stripe.com en rond de verificatie af (bedrijfsgegevens, KvK, bankrekening).
-2. Settings → Payment methods → zet **iDEAL** aan (en eventueel Bancontact voor België).
-3. Settings → Notifications → zet e-mail aan bij geslaagde betalingen, zodat je elke bestelling meteen ziet.
+In het Mollie-dashboard zie je bij elke betaling ook het bestelnummer, het product en de maat in de omschrijving, en alle klantgegevens bij de metadata.
 
-**Per product en per maat een betaallink maken**
-1. Stripe-dashboard → **Payment Links** → **New**.
-2. Product toevoegen met de maat in de naam, bijv. *DV Signature Tracksuit — Black — M*, prijs €89,95.
-3. Bij de opties: **Collect customers' addresses** → verzendadres, landen Nederland (en België).
-4. Verzendkosten: voeg een verzendtarief toe als het product onder de gratis-verzendgrens valt (bijv. de tas).
-5. Tabblad **After payment** → kies doorsturen naar je eigen pagina: `https://www.dutchvenom.nl/bedankt/`.
-6. Optioneel bij limited drops: beperk het aantal betalingen per link (= je voorraad voor die maat).
-7. Kopieer de link (`https://buy.stripe.com/...`).
+**Eenmalig instellen**
+1. **Mollie**: Dashboard → Developers → API keys. Kopieer eerst de **Test API key** (`test_...`).
+2. **Netlify**: Site configuration → Environment variables → Add a variable:
+   - Key: `MOLLIE_API_KEY`
+   - Value: de test-sleutel
+   Daarna: Deploys → Trigger deploy → Deploy site.
+3. **Netlify Forms aanzetten**: Forms → *Enable form detection*. Deploy daarna nog één keer (Trigger deploy).
+4. **Mail bij elke bestelling**: Site configuration → Notifications → Emails and webhooks → Form submission notifications → *Add notification* → e-mail → formulier `bestellingen`.
+5. **Test**: doe een bestelling op de site. In testmodus kies je bij Mollie zelf de uitkomst (betaald / mislukt). Controleer of `/bedankt/` klopt en of de bestelling in Netlify Forms staat.
+6. **Live gaan**: vervang in Netlify de waarde van `MOLLIE_API_KEY` door je **Live API key** (`live_...`) en deploy opnieuw. Je Mollie-account moet daarvoor volledig geactiveerd zijn.
 
-**Link invullen**: admin-paneel → Producten → product → *Betaallinks per maat (Stripe)* → maat kiezen + link plakken → Publish.
+Zet de API-sleutel nooit in een bestand of in het admin-paneel: alleen in de omgevingsvariabelen van Netlify.
 
-In Stripe zie je bij elke betaling ook een *client reference ID* zoals `dv-men-signature-tracksuit-black-M` (product + maat) als extra controle.
+**Verzendkosten en verzendlanden** stel je in via admin → Site-instellingen.
+
+Zolang `MOLLIE_API_KEY` niet is ingesteld, toont het formulier "Online betalen staat nog niet aan" met een link om via e-mail te bestellen.
 
 ## Video's (Higgsfield-workflow)
 
@@ -81,6 +84,6 @@ Workflow: maak je clip in Higgsfield → download als mp4 → upload in het pane
 ## Belangrijk om te weten
 
 - **Snelste route zonder admin**: de map direct naar Netlify slepen (drag & drop op app.netlify.com/drop) laat de site werken, maar dan werkt het admin-paneel niet — dat vereist de GitHub-route hierboven.
-- **Bestellingen/afrekenen**: zie "Productpagina's & bestellen" hierboven. De bundels hebben nog een eigen link-veld (bijv. ook een Stripe-betaallink).
+- **Bestellingen/afrekenen**: zie "Productpagina's & bestellen" hierboven. De bundels hebben nog een eigen link-veld; afrekenen voor bundels via Mollie volgt nog.
 - **OG-afbeelding**: `images/og-image.jpg` (1200×630px) is het deel-plaatje op social media. Vervang het bestand om het te wijzigen.
 - **Google Search Console**: meld je site aan op search.google.com/search-console en dien `sitemap.xml` in voor snellere indexering.
