@@ -72,15 +72,6 @@ collections:
                 options: ["XS", "S", "M", "L", "XL", "XXL", "One size"]
                 default: ["S", "M", "L", "XL"]
                 hint: "Welke maten de klant kan kiezen. Accessoires: kies alleen 'One size'."
-              - label: "Betaallinks per maat (Stripe)"
-                name: "betaallinks"
-                widget: "list"
-                required: false
-                summary: "{{fields.maat}} → {{fields.link}}"
-                hint: "Per maat de Stripe-betaallink (begint met https://buy.stripe.com/). Maat zonder link = klant kan bestellen via e-mail."
-                fields:
-                  - { label: "Maat", name: "maat", widget: "select", options: ["XS", "S", "M", "L", "XL", "XXL", "One size"] }
-                  - { label: "Stripe-betaallink", name: "link", widget: "string", pattern: ["^https://", "Moet beginnen met https://"] }
               - { label: "Adres van de pagina (optioneel)", name: "slug", widget: "string", required: false, hint: "Leeg = automatisch uit de naam, bijv. /product/dv-men-signature-tracksuit-black/. Let op: wijzig je de naam of dit veld, dan verandert het adres van de pagina." }
 
   - name: "instellingen"
@@ -106,5 +97,8 @@ collections:
           - { label: "Instagram URL", name: "instagram", widget: "string" }
           - { label: "TikTok URL", name: "tiktok", widget: "string" }
           - { label: "E-mailadres", name: "email", widget: "string" }
+          - { label: "Verzendkosten (€)", name: "verzendkosten", widget: "number", value_type: "float", step: 0.05, default: 4.95 }
+          - { label: "Gratis verzending vanaf (€, 0 = nooit gratis)", name: "gratis_verzending_vanaf", widget: "number", value_type: "float", step: 1, default: 75 }
+          - { label: "Verzendlanden", name: "verzendlanden", widget: "select", multiple: true, options: [{ label: "Nederland", value: "NL" }, { label: "België", value: "BE" }, { label: "Duitsland", value: "DE" }, { label: "Luxemburg", value: "LU" }, { label: "Frankrijk", value: "FR" }], default: ["NL", "BE"] }
           - { label: "SEO titel (Google)", name: "seo_titel", widget: "string" }
           - { label: "SEO beschrijving (Google)", name: "seo_beschrijving", widget: "text" }
