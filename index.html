@@ -604,6 +604,28 @@
       {naam:"DV Cropped Hoodie — Bone",categorie:"Dames",prijs:59.95,oude_prijs:null,afbeelding:"/images/product-3.svg",alt_tekst:"Cropped hoodie in bone white",beschrijving:"Cropped fit hoodie in bone white. Zachte binnenkant, geborduurd logo.",badge:"",uitverkocht:false,link:"#"}
     ]};
 
+    /* ---------- foto's licht maken via Netlify Image CDN ----------
+       Foto's uit het admin-paneel kunnen vele MB's groot zijn. Op de live site
+       vraagt de browser via /.netlify/images een verkleinde versie op (WebP/AVIF,
+       juiste breedte). Lukt dat niet (bijv. lokaal testen), dan valt hij terug
+       op het originele bestand. SVG's en externe links blijven ongemoeid. */
+    var useImageCdn = location.protocol === "https:" && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    function cdn(url, w){
+      if(!useImageCdn || !url || url.charAt(0) !== "/" || /\.svg(\?|$)/i.test(url)) return url;
+      return "/.netlify/images?url=" + encodeURIComponent(url) + "&w=" + w + "&q=75";
+    }
+    function setImg(img, url, sizes){
+      img.src = cdn(url, 800) || "";
+      if(cdn(url, 800) !== url){
+        img.srcset = [480, 800, 1200].map(function(w){ return cdn(url, w) + " " + w + "w"; }).join(", ");
+        img.sizes = sizes;
+        img.addEventListener("error", function onErr(){
+          img.removeEventListener("error", onErr);
+          img.removeAttribute("srcset"); img.src = url;
+        });
+      }
+    }
+
     function euro(n){
       return "€" + Number(n).toFixed(2).replace(".", ",");
     }
@@ -661,11 +683,11 @@
           if(hasVideo){
             var vid = card.querySelector("video");
             vid.src = p.video;
-            if(p.afbeelding) vid.poster = p.afbeelding;
+            if(p.afbeelding) vid.poster = cdn(p.afbeelding, 800);
             vid.setAttribute("aria-label", p.alt_tekst || p.naam || "");
           } else {
             var img = card.querySelector("img");
-            img.src = p.afbeelding || "";
+            setImg(img, p.afbeelding || "", "(max-width:680px) 92vw, (max-width:980px) 46vw, 380px");
             img.alt = p.alt_tekst || p.naam || "";
           }
           if(p.badge && !p.uitverkocht) card.querySelector(".badge").textContent = p.badge;
@@ -736,8 +758,9 @@
           '</div></div>';
 
         var imgs = scene.querySelectorAll("img");
-        imgs[0].src = b.foto_links || ""; imgs[0].alt = b.alt_links || b.naam || "";
-        imgs[1].src = b.foto_rechts || ""; imgs[1].alt = b.alt_rechts || b.naam || "";
+        var bSizes = "(max-width:680px) 42vw, 300px";
+        setImg(imgs[0], b.foto_links || "", bSizes); imgs[0].alt = b.alt_links || b.naam || "";
+        setImg(imgs[1], b.foto_rechts || "", bSizes); imgs[1].alt = b.alt_rechts || b.naam || "";
         scene.querySelector(".b-sub").textContent = b.ondertitel || "";
         scene.querySelector("h3").textContent = b.naam || "";
         scene.querySelector(".b-desc").textContent = b.beschrijving || "";
