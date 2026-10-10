@@ -3,7 +3,7 @@
  * Voor de bedankpagina: geeft alleen de status, het bestelnummer en het product
  * terug (geen naam/adres).
  */
-import { json, mollie } from "../shared/shop.mjs";
+import { json, mollie, unpackItems } from "../shared/shop.mjs";
 
 export default async (req) => {
   const id = new URL(req.url).searchParams.get("id") || "";
@@ -12,7 +12,10 @@ export default async (req) => {
   try {
     const p = await mollie(`/payments/${id}`);
     const m = p.metadata || {};
-    return json({ status: p.status, ref: m.ref || "", product: m.product || "", maat: m.maat || "", slug: m.slug || "" });
+    const samenvatting = m.items
+      ? unpackItems(m.items).map((x) => `${x.aantal}× ${x.naam} (${x.maat})`).join(", ")
+      : m.product ? `${m.product} (${m.maat || "?"})` : "";
+    return json({ status: p.status, ref: m.ref || "", samenvatting });
   } catch (e) {
     return json({ error: "Niet gevonden." }, e.status === 404 ? 404 : 502);
   }

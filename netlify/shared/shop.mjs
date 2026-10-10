@@ -32,13 +32,12 @@ export async function mollie(path, { method = "GET", body } = {}) {
   return data;
 }
 
-/** Bedragen in centen om afrondingsfouten te voorkomen. */
-export function totals(prijs, site) {
-  const sub = Math.round(Number(prijs) * 100);
+/** Verzendkosten bij een subtotaal (in centen, om afrondingsfouten te voorkomen). */
+export function totals(subCents, site) {
   const drempel = Math.round(Number(site.gratis_verzending_vanaf || 0) * 100);
   const kosten = Math.round(Number(site.verzendkosten || 0) * 100);
-  const verzending = drempel > 0 && sub >= drempel ? 0 : kosten;
-  return { sub, verzending, totaal: sub + verzending };
+  const verzending = drempel > 0 && subCents >= drempel ? 0 : kosten;
+  return { sub: subCents, verzending, totaal: subCents + verzending };
 }
 
 export const eur = (cents) => (cents / 100).toFixed(2); // "89.95" (Mollie-formaat)
@@ -52,20 +51,48 @@ export function orderRef() {
 
 const clean = (v, max) => String(v == null ? "" : v).replace(/[\u0000-\u001f\u007f]/g, " ").trim().slice(0, max);
 
-/** Controleert het bestelformulier. Geeft { order } of { error } terug. */
+export const MAX_LINES = 10;
+export const MAX_QTY = 10;
+
+/** Artikelen in metadata zo kort mogelijk bewaren: "slug|maat|aantal;..." (Mollie-metadata is max ±1 kB). */
+export const packItems = (lines) => lines.map((l) => `${l.product.slug}|${l.maat}|${l.aantal}`).join(";");
+export function unpackItems(str) {
+  return String(str || "").split(";").filter(Boolean).map((part) => {
+    const [slug, maat, aantal] = part.split("|");
+    const p = catalog.products.find((x) => x.slug === slug);
+    return { slug, maat, aantal: Number(aantal) || 1, naam: p ? p.naam : slug, prijs: p ? p.prijs : null };
+  });
+}
+
+/** Controleert winkelmand + bezorggegevens. Geeft { order } of { error } terug. */
 export function validateOrder(b) {
   if (!b || typeof b !== "object") return { error: "Ongeldige aanvraag." };
   if (b.website) return { error: "Ongeldige aanvraag." }; // honeypot tegen spam-bots
 
-  const p = catalog.products.find((x) => x.slug === b.slug);
-  if (!p) return { error: "Dit product bestaat niet (meer)." };
-  if (p.uitverkocht) return { error: "Dit product is uitverkocht." };
-  const maat = clean(b.maat, 20);
-  if (!p.maten.includes(maat)) return { error: "Kies een geldige maat." };
+  // Oude productpagina's stuurden één product; nieuwe sturen een winkelmand.
+  const raw = Array.isArray(b.items) ? b.items : b.slug ? [{ slug: b.slug, maat: b.maat, aantal: 1 }] : [];
+  if (!raw.length) return { error: "Je winkelmand is leeg." };
+  if (raw.length > 50) return { error: "Ongeldige winkelmand." };
+
+  const merged = new Map();
+  for (const it of raw) {
+    if (!it || typeof it !== "object") return { error: "Ongeldige winkelmand." };
+    const p = catalog.products.find((x) => x.slug === it.slug);
+    if (!p) return { error: "Een product in je winkelmand bestaat niet meer. Haal het weg en probeer opnieuw." };
+    if (p.uitverkocht) return { error: `${p.naam} is uitverkocht. Haal het uit je winkelmand.` };
+    const maat = clean(it.maat, 20);
+    if (!p.maten.includes(maat)) return { error: `Kies een geldige maat voor ${p.naam}.` };
+    const aantal = Math.floor(Number(it.aantal));
+    if (!(aantal >= 1 && aantal <= MAX_QTY)) return { error: "Ongeldig aantal in je winkelmand." };
+    const key = p.slug + "|" + maat;
+    const prev = merged.get(key);
+    merged.set(key, { product: p, maat, aantal: Math.min(MAX_QTY, (prev ? prev.aantal : 0) + aantal) });
+  }
+  const lines = [...merged.values()];
+  if (lines.length > MAX_LINES) return { error: `Maximaal ${MAX_LINES} verschillende artikelen per bestelling.` };
 
   const o = {
-    product: p,
-    maat,
+    lines,
     naam: clean(b.naam, 80),
     email: clean(b.email, 120),
     telefoon: clean(b.telefoon, 25),
