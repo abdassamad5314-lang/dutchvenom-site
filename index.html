@@ -50,6 +50,8 @@
     }
   </script>
 
+  <link rel="stylesheet" href="/assets/cart.css">
+  <script src="/assets/cart.js" defer></script>
   <style>
     :root{
       --nightscale:#0C1310;
@@ -392,8 +394,11 @@
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-      <a class="nav-cta" href="#collectie">SHOP NU</a>
-      <button class="burger" id="burger" aria-label="Menu openen" aria-expanded="false">☰</button>
+      <div class="nav-right">
+        <a class="nav-cta" href="#collectie">SHOP NU</a>
+        <a class="cart-link" href="/winkelmand/" aria-label="Winkelmand"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="cart-count" data-cart-count hidden>0</span></a>
+        <button class="burger" id="burger" aria-label="Menu openen" aria-expanded="false">☰</button>
+      </div>
     </div>
   </header>
 

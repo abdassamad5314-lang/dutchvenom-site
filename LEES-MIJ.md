@@ -48,12 +48,15 @@ Foto's/video's upload je direct in het paneel; ze komen automatisch in `images/u
 Elk product heeft een eigen pagina op `/product/<naam-van-het-product>/`, met foto's, maatkeuze en een bestelformulier. Die pagina's worden bij elke publicatie automatisch opnieuw gemaakt (door `scripts/build.js`), dus een nieuw product in het admin-paneel krijgt vanzelf een pagina.
 
 **Hoe bestellen werkt**
-1. Klant kiest een maat → "Bestellen" → vult naam, e-mail en bezorgadres in.
-2. De site maakt via Mollie een betaling aan. De prijs en verzendkosten komen uit het admin-paneel, niet uit de browser.
-3. Klant betaalt bij Mollie (iDEAL en alle andere methodes die je in Mollie aanzet) en komt terug op `/bedankt/`, die laat zien of de betaling gelukt is.
-4. Zodra Mollie meldt dat er betaald is, komt de bestelling (product, maat, adres, bedrag, bestelnummer) binnen in Netlify bij **Forms → bestellingen**, en krijg je een e-mail als je dat hebt ingesteld.
+1. Klant kiest een maat → "In winkelmand". Rechtsboven in de menubalk telt het mandje mee.
+2. In de winkelmand (`/winkelmand/`) past de klant aantallen aan of haalt artikelen weg, ziet subtotaal, verzendkosten en totaal, en vult naam, e-mail en bezorgadres in.
+3. De site maakt via Mollie één betaling aan voor de hele winkelmand. De prijzen en verzendkosten komen uit het admin-paneel, niet uit de browser.
+4. Klant betaalt bij Mollie en komt terug op `/bedankt/`, die laat zien of de betaling gelukt is. Na een geslaagde betaling wordt het mandje leeggemaakt; bij een mislukte betaling blijft het staan.
+5. Zodra Mollie meldt dat er betaald is, komt de bestelling (alle artikelen met maat en aantal, adres, bedragen, bestelnummer) binnen in Netlify bij **Forms → bestellingen**, met een e-mail als je dat hebt ingesteld.
 
-In het Mollie-dashboard zie je bij elke betaling ook het bestelnummer, het product en de maat in de omschrijving, en alle klantgegevens bij de metadata.
+Het mandje wordt in de browser van de klant bewaard (ook als die de site sluit en later terugkomt). Maximaal 10 verschillende artikelen en 10 stuks per artikel per bestelling.
+
+In het Mollie-dashboard zie je bij elke betaling ook het bestelnummer en de artikelen in de omschrijving, en alle klantgegevens bij de metadata.
 
 **Eenmalig instellen**
 1. **Mollie**: Dashboard → Developers → API keys. Kopieer eerst de **Test API key** (`test_...`).

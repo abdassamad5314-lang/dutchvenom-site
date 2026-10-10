@@ -5,7 +5,7 @@
  * bestelling als formulier "bestellingen" in Netlify Forms gezet → jij krijgt
  * een e-mail met product, maat en adres.
  */
-import { mollie } from "../shared/shop.mjs";
+import { mollie, unpackItems } from "../shared/shop.mjs";
 
 const ok = () => new Response("", { status: 200 });
 
@@ -27,12 +27,15 @@ export default async (req) => {
   if (payment.status !== "paid" || m.gemeld) return ok();
 
   const origin = new URL(req.url).origin;
+  // Nieuwe bestellingen: winkelmand in m.items. Oudere (één product): m.product + m.maat.
+  const lines = m.items
+    ? unpackItems(m.items).map((x) => `${x.aantal}× ${x.naam} — maat ${x.maat}${x.prijs != null ? ` (à €${Number(x.prijs).toFixed(2).replace(".", ",")})` : ""}`)
+    : [`1× ${m.product || payment.description || "?"} — maat ${m.maat || "?"}`];
   const fields = {
     "form-name": "bestellingen",
     bestelnummer: m.ref || "",
-    product: m.product || payment.description || "",
-    maat: m.maat || "",
-    prijs: m.prijs || "",
+    artikelen: lines.join("\n"),
+    subtotaal: m.subtotaal || m.prijs || "",
     verzending: m.verzending || "",
     totaal: (payment.amount && payment.amount.value) || m.totaal || "",
     naam: m.naam || "",
