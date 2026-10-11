@@ -1,10 +1,10 @@
 /*
  * POST /.netlify/functions/checkout
- * Maakt een Mollie-betaling aan voor één product in één maat en stuurt de
- * betaal-URL terug. De prijs komt uit de catalogus (niet uit de browser),
+ * Maakt één Mollie-betaling aan voor de hele winkelmand en stuurt de betaal-URL
+ * terug. Prijzen en verzendkosten komen uit de catalogus (niet uit de browser),
  * zodat niemand zelf een lagere prijs kan meesturen.
  */
-import { catalog, json, mollie, totals, eur, orderRef, validateOrder } from "../shared/shop.mjs";
+import { catalog, json, mollie, totals, eur, orderRef, validateOrder, packItems } from "../shared/shop.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return json({ error: "Methode niet toegestaan." }, 405);
@@ -16,36 +16,41 @@ export default async (req) => {
   const { order, error } = validateOrder(body);
   if (error) return json({ error }, 400);
 
-  const p = order.product;
-  const t = totals(p.prijs, catalog.site);
+  const subCents = order.lines.reduce((n, l) => n + Math.round(l.product.prijs * 100) * l.aantal, 0);
+  const t = totals(subCents, catalog.site);
   const ref = orderRef();
   const origin = new URL(req.url).origin; // werkt op dutchvenom.nl én op previews
+
+  const aantal = order.lines.reduce((n, l) => n + l.aantal, 0);
+  const summary = order.lines.map((l) => `${l.aantal}× ${l.product.naam} (${l.maat})`).join(", ");
+  const metadata = {
+    ref,
+    items: packItems(order.lines),
+    subtotaal: eur(t.sub),
+    verzending: eur(t.verzending),
+    totaal: eur(t.totaal),
+    naam: order.naam,
+    email: order.email,
+    telefoon: order.telefoon,
+    adres: order.adres,
+    postcode: order.postcode,
+    plaats: order.plaats,
+    land: order.land,
+  };
+  if (Buffer.byteLength(JSON.stringify(metadata)) > 1000) {
+    return json({ error: "Je bestelling is te groot voor één betaling. Splits hem in twee bestellingen." }, 400);
+  }
 
   try {
     const payment = await mollie("/payments", {
       method: "POST",
       body: {
         amount: { currency: "EUR", value: eur(t.totaal) },
-        description: `${ref} · ${p.naam} · maat ${order.maat}`.slice(0, 255),
+        description: `${ref} · ${aantal === 1 ? "" : aantal + " artikelen: "}${summary}`.slice(0, 255),
         redirectUrl: `${origin}/bedankt/`,
         webhookUrl: `${origin}/.netlify/functions/mollie-webhook`,
         locale: "nl_NL",
-        metadata: {
-          ref,
-          product: p.naam,
-          slug: p.slug,
-          maat: order.maat,
-          prijs: eur(t.sub),
-          verzending: eur(t.verzending),
-          totaal: eur(t.totaal),
-          naam: order.naam,
-          email: order.email,
-          telefoon: order.telefoon,
-          adres: order.adres,
-          postcode: order.postcode,
-          plaats: order.plaats,
-          land: order.land,
-        },
+        metadata,
       },
     });
 

@@ -4,6 +4,8 @@
  *
  * Maakt uit content/products.json en content/site.json:
  *   - /product/<slug>/index.html   één pagina per product (met maatkeuze + bestelknop)
+ *   - /winkelmand/index.html       het winkelmandje met bezorgformulier en afrekenen
+ *   - /assets/catalog.json         namen/prijzen/foto's voor het winkelmandje in de browser
  *   - /bedankt/index.html          pagina waar Mollie na betaling naartoe stuurt (toont de status)
  *   - /sitemap.xml                 met de homepage én alle productpagina's
  *   - netlify/shared/catalog.mjs   prijzen/maten voor de Mollie-afrekenfunctie
@@ -28,10 +30,7 @@ const shipping = {
   verzendlanden: Array.isArray(site.verzendlanden) && site.verzendlanden.length ? site.verzendlanden.map(String) : ["NL"],
 };
 const LANDEN = { NL: "Nederland", BE: "België", DE: "Duitsland", FR: "Frankrijk", LU: "Luxemburg" };
-function shipCents(prijs) {
-  const sub = Math.round(Number(prijs) * 100), drempel = Math.round(shipping.gratis_verzending_vanaf * 100);
-  return drempel > 0 && sub >= drempel ? 0 : Math.round(shipping.verzendkosten * 100);
-}
+
 
 /* ---------- hulpfuncties ---------- */
 
@@ -95,6 +94,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(12,19,16,.86);backdrop-f
 .logo svg{width:26px;height:26px}
 .nav-back{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;color:var(--bone-dim);text-decoration:none;padding:10px 0}
 .nav-back:hover{color:var(--toxin)}
+.logo span{white-space:nowrap}
+@media (max-width:560px){.nav-back{display:none}.logo{font-size:18px}}
 .crumbs{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.08em;color:var(--moss);padding:22px 0 0}
 .crumbs a{text-decoration:none;color:var(--bone-dim)}
 .crumbs a:hover{color:var(--toxin)}
@@ -215,14 +216,19 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <meta property="og:image" content="${esc(ogImage)}">
 <meta name="twitter:card" content="summary_large_image">
 ${FONTS}
+<link rel="stylesheet" href="/assets/cart.css">
 <style>${CSS}${head && head.css ? head.css : ""}</style>
+<script src="/assets/cart.js" defer></script>
 ${head && head.extra ? head.extra : ""}
 </head>
 <body>
 ${site.aankondiging ? `<div class="announce">${esc(site.aankondiging)}</div>` : ""}
 <header><div class="wrap nav">
   <a class="logo" href="/" aria-label="${brand} home">${logoHtml}<span>${brand}</span></a>
-  <a class="nav-back" href="/#collectie">← Collectie</a>
+  <div class="nav-right">
+    <a class="nav-back" href="/#collectie">← Collectie</a>
+    <a class="cart-link" href="/winkelmand/" aria-label="Winkelmand"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="cart-count" data-cart-count hidden>0</span></a>
+  </div>
 </div></header>
 <main>
 ${body}
@@ -280,10 +286,7 @@ function productPage(p, i) {
       availability: sold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock" },
   };
 
-  const ship = shipCents(p.prijs);
-  const cfg = { slug: p._slug, naam: p.naam, email: site.email || "", sold, single, prijs: euro(p.prijs),
-    verzending: ship === 0 ? "Gratis" : euro(ship / 100), totaal: euro((Math.round(Number(p.prijs) * 100) + ship) / 100) };
-  const landOptions = shipping.verzendlanden.map((c) => `<option value="${esc(c)}">${esc(LANDEN[c] || c)}</option>`).join("");
+  const cfg = { slug: p._slug, naam: p.naam, sold, single, prijs: euro(p.prijs) };
 
   const body = `
 <div class="wrap">
@@ -305,31 +308,9 @@ function productPage(p, i) {
       <p class="fit">${single ? "Eén maat, verstelbaar." : "Tussen twee maten? Neem de kleinste voor een normale pasvorm, je gewone maat voor oversized."}</p>
 
       <div class="order">
-        <a class="btn" id="orderBtn" aria-disabled="true" role="button" href="#bestellen">${sold ? "Uitverkocht" : single ? "Bestellen — " + euro(p.prijs) : "Kies eerst je maat"}</a>
+        <button class="btn" type="button" id="orderBtn" aria-disabled="true"${sold ? " disabled" : ""}>${sold ? "Uitverkocht" : single ? "In winkelmand — " + euro(p.prijs) : "Kies eerst je maat"}</button>
         <p class="order-note" id="orderNote" aria-live="polite">${sold ? "Dit item komt niet terug. Volg ons op Instagram voor nieuwe drops." : "Veilig betalen met iDEAL via Mollie"}</p>
       </div>
-      ${sold ? "" : `
-      <form class="checkout" id="bestellen" hidden novalidate>
-        <h2>Bezorggegevens</h2>
-        <div class="f2">
-          <label class="full">Naam<input name="naam" autocomplete="name" required maxlength="80"></label>
-          <label class="full">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120"><small>Voor je bevestiging en track &amp; trace</small></label>
-          <label class="full">Straat en huisnummer<input name="adres" autocomplete="street-address" required maxlength="120"></label>
-          <label>Postcode<input name="postcode" autocomplete="postal-code" required maxlength="12"></label>
-          <label>Plaats<input name="plaats" autocomplete="address-level2" required maxlength="60"></label>
-          <label>Land<select name="land" autocomplete="country">${landOptions}</select></label>
-          <label><span>Telefoon <em>(optioneel)</em></span><input name="telefoon" type="tel" autocomplete="tel" maxlength="25"></label>
-          <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-        </div>
-        <dl class="sum">
-          <div><dt id="sumProduct">${esc(p.naam)}</dt><dd>${euro(p.prijs)}</dd></div>
-          <div><dt>Verzending</dt><dd>${cfg.verzending}</dd></div>
-          <div class="tot"><dt>Totaal</dt><dd>${cfg.totaal}</dd></div>
-        </dl>
-        <button class="btn" type="submit" id="payBtn">Afrekenen — ${cfg.totaal}</button>
-        <p class="form-msg" id="formMsg" role="alert"></p>
-        <p class="pay-note">Je gaat naar de beveiligde betaalpagina van Mollie (o.a. iDEAL).</p>
-      </form>`}
 
       <ul class="trust">
         <li>${ICON.truck}<span>${esc(site.usp_2 || "Snelle verzending")}</span></li>
@@ -342,7 +323,7 @@ function productPage(p, i) {
   </article>
   ${relatedHtml}
 </div>
-<div class="mobile-bar" id="mobileBar" aria-hidden="true"><p class="mp">${euro(p.prijs)}<small id="mbSize">${single ? esc(sizes[0]) : "Kies je maat"}</small></p><a class="btn" href="#" id="mbBtn">${sold ? "Uitverkocht" : "Bestellen"}</a></div>
+<div class="mobile-bar" id="mobileBar" aria-hidden="true"><p class="mp">${euro(p.prijs)}<small id="mbSize">${single ? esc(sizes[0]) : "Kies je maat"}</small></p><button class="btn" type="button" id="mbBtn">${sold ? "Uitverkocht" : "In winkelmand"}</button></div>
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
 <script>
 (function(){
@@ -353,52 +334,27 @@ function productPage(p, i) {
   var first = document.querySelector(".sizes button");
   var chosen = C.single && first ? first.getAttribute("data-size") : null;
 
-  var form = document.getElementById("bestellen"), msg = document.getElementById("formMsg"), payBtn = document.getElementById("payBtn");
-
   function update(){
     if(C.sold) return;
-    if(!chosen){ btn.setAttribute("aria-disabled","true"); btn.textContent = "Kies eerst je maat"; if(form) form.hidden = true; return; }
+    if(!chosen){ btn.setAttribute("aria-disabled","true"); btn.textContent = "Kies eerst je maat"; return; }
     btn.removeAttribute("aria-disabled");
-    btn.textContent = "Bestellen — " + C.prijs;
-    document.getElementById("sumProduct").textContent = C.naam + " · maat " + chosen;
+    btn.textContent = "In winkelmand — " + C.prijs;
     var mb = document.getElementById("mbSize"); if(mb) mb.textContent = "Maat " + chosen;
   }
-  function openForm(){
-    if(!form || !chosen) return;
-    form.hidden = false;
-    form.scrollIntoView({behavior:"smooth", block:"start"});
-    setTimeout(function(){ var f = form.querySelector("input"); if(f) f.focus({preventScroll:true}); }, 350);
+  function addToCart(){
+    if(C.sold) return;
+    if(!chosen){
+      note.textContent = "Kies eerst je maat.";
+      document.querySelector(".size-head").scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+    if(!window.DVCart){ note.textContent = "Winkelmand kon niet laden. Ververs de pagina."; return; }
+    var r = window.DVCart.add(C.slug, chosen, 1);
+    if(!r.ok){ note.textContent = r.error; return; }
+    note.textContent = "Toegevoegd: maat " + chosen + ".";
+    window.DVCart.toast(C.naam + " (maat " + chosen + ") zit in je winkelmand", "Bekijk winkelmand", "/winkelmand/");
   }
-  btn.addEventListener("click", function(e){ e.preventDefault(); openForm(); });
-
-  function mailFallback(){
-    return "mailto:" + C.email + "?subject=" + encodeURIComponent("Bestelling: " + C.naam + " — maat " + chosen) +
-      "&body=" + encodeURIComponent("Hoi Dutch Venom,\\n\\nIk wil graag bestellen:\\n" + C.naam + "\\nMaat: " + chosen + "\\n\\nNaam:\\nAdres:\\nPostcode + plaats:\\n\\nGroet,");
-  }
-  if(form) form.addEventListener("input", function(){ if(msg.textContent && !payBtn.disabled) msg.textContent = ""; });
-  if(form) form.addEventListener("submit", function(e){
-    e.preventDefault();
-    msg.textContent = "";
-    var bad = Array.prototype.filter.call(form.querySelectorAll("[required]"), function(el){ return !el.value.trim(); });
-    if(bad.length){ msg.textContent = "Vul alle verplichte velden in."; bad[0].focus(); return; }
-    var data = { slug: C.slug, maat: chosen };
-    Array.prototype.forEach.call(form.elements, function(el){ if(el.name) data[el.name] = el.value; });
-    payBtn.disabled = true; var label = payBtn.textContent; payBtn.textContent = "Even geduld…";
-    fetch("/.netlify/functions/checkout", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) })
-      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {status: r.status, body: j}; }); })
-      .then(function(res){
-        if(res.body && res.body.checkoutUrl){ window.location.href = res.body.checkoutUrl; return; }
-        payBtn.disabled = false; payBtn.textContent = label;
-        if(res.status === 503 || res.status === 404){
-          msg.innerHTML = "";
-          msg.appendChild(document.createTextNode("Online betalen staat nog niet aan. "));
-          var a = document.createElement("a"); a.href = mailFallback(); a.textContent = "Bestel via e-mail"; msg.appendChild(a);
-        } else {
-          msg.textContent = (res.body && res.body.error) || "Er ging iets mis. Probeer het opnieuw.";
-        }
-      })
-      .catch(function(){ payBtn.disabled = false; payBtn.textContent = label; msg.textContent = "Geen verbinding. Probeer het opnieuw."; });
-  });
+  btn.addEventListener("click", function(e){ e.preventDefault(); addToCart(); });
 
   document.querySelectorAll(".sizes button").forEach(function(b){
     b.addEventListener("click", function(){
@@ -425,17 +381,14 @@ function productPage(p, i) {
   var bar = document.getElementById("mobileBar"), mbBtn = document.getElementById("mbBtn");
   function toggleBar(){
     if(!bar) return;
-    var formInView = form && !form.hidden && form.getBoundingClientRect().top < window.innerHeight && form.getBoundingClientRect().bottom > 0;
-    var off = btn.getBoundingClientRect().bottom < 0 && !formInView;
+    var off = btn.getBoundingClientRect().bottom < 0;
     bar.classList.toggle("show", off); bar.setAttribute("aria-hidden", off ? "false" : "true");
   }
   window.addEventListener("scroll", toggleBar, {passive:true});
   toggleBar();
   if(mbBtn) mbBtn.addEventListener("click", function(e){
     e.preventDefault();
-    if(C.sold) return;
-    if(chosen){ openForm(); return; }
-    document.querySelector(".size-head").scrollIntoView({behavior:"smooth", block:"center"});
+    addToCart();
   });
 })();
 </script>`;
@@ -446,7 +399,7 @@ function productPage(p, i) {
 /* ---------- bedankpagina ---------- */
 
 function thanksPage() {
-  const formFields = ["bestelnummer", "product", "maat", "prijs", "verzending", "totaal", "naam", "email", "telefoon",
+  const formFields = ["bestelnummer", "artikelen", "subtotaal", "verzending", "totaal", "naam", "email", "telefoon",
     "adres", "postcode", "plaats", "land", "mollie_id", "betaalmethode"];
   const body = `
 <div class="wrap" style="max-width:720px;text-align:center;padding-top:110px">
@@ -472,13 +425,14 @@ function thanksPage() {
     fetch("/.netlify/functions/order-status?id=" + encodeURIComponent(id)).then(function(r){ return r.json(); }).then(function(j){
       var ref = j.ref ? " (" + j.ref + ")" : "";
       if(j.status === "paid" || j.status === "authorized"){
-        show("Bestelling ontvangen" + ref, "Bedankt — je venom is onderweg", "Je betaling is gelukt" + (j.product ? " voor " + j.product + (j.maat ? ", maat " + j.maat : "") : "") + ". Je krijgt een bevestiging per e-mail en we pakken je bestelling zo snel mogelijk in.");
+        if(window.DVCart) window.DVCart.clear(); else window.addEventListener("load", function(){ if(window.DVCart) window.DVCart.clear(); });
+        show("Bestelling ontvangen" + ref, "Bedankt — je venom is onderweg", "Je betaling is gelukt" + (j.samenvatting ? " voor " + j.samenvatting : "") + ". Je krijgt een bevestiging per e-mail en we pakken je bestelling zo snel mogelijk in.");
       } else if(j.status === "open" || j.status === "pending"){
         if(tries++ < 6){ setTimeout(check, 2500); show("Even geduld" + ref, "Betaling wordt verwerkt", "We wachten op de bevestiging van je bank…"); return; }
         show("Bijna klaar" + ref, "Betaling wordt verwerkt", "Je bank heeft je betaling nog niet bevestigd. Zodra dat gebeurt krijg je een e-mail.");
       } else if(j.status === "canceled" || j.status === "expired" || j.status === "failed"){
-        show("Niet betaald" + ref, "Betaling niet gelukt", "Er is niets afgeschreven. Wil je het opnieuw proberen?");
-        b.textContent = "Opnieuw proberen"; b.href = j.slug ? "/product/" + j.slug + "/" : "/#collectie";
+        show("Niet betaald" + ref, "Betaling niet gelukt", "Er is niets afgeschreven. Je winkelmand staat nog klaar, dus je kunt het zo opnieuw proberen.");
+        b.textContent = "Terug naar winkelmand"; b.href = "/winkelmand/";
       } else {
         show("Bestelling", "Bedankt!", "Je ontvangt een bevestiging per e-mail zodra je betaling binnen is.");
       }
@@ -489,6 +443,209 @@ function thanksPage() {
 </script>`;
   return shell({ title: "Je bestelling | Dutch Venom", description: "Status van je bestelling bij Dutch Venom.",
     canonical: SITE_URL + "/bedankt/", ogImage: SITE_URL + "/images/og-image.jpg", body, noindex: true });
+}
+
+/* ---------- winkelmand ---------- */
+
+const CART_CSS = `
+.cartwrap{padding-top:40px}
+.cartwrap h1{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:108%;font-size:clamp(32px,4.4vw,52px);line-height:1;text-transform:uppercase;margin-bottom:30px}
+.cartgrid{display:grid;grid-template-columns:1.25fr .75fr;gap:44px;align-items:start}
+.lines{list-style:none;border-top:1px solid var(--line)}
+.line{display:grid;grid-template-columns:92px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px solid var(--line);align-items:center}
+.line .th{width:92px;aspect-ratio:4/5;border-radius:10px;overflow:hidden;background:#0a0f0d;border:1px solid var(--line)}
+.line .th img{width:100%;height:100%;object-fit:cover}
+.line .nm{font-family:"Archivo",sans-serif;font-weight:800;font-size:16.5px;line-height:1.25;text-decoration:none}
+.line .nm:hover{color:var(--toxin)}
+.line .mt{font-family:"Space Mono",monospace;font-size:12.5px;color:var(--bone-dim);margin:4px 0 10px}
+.line .warn{font-size:13px;color:#E8A08A;margin:4px 0 8px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:100px;overflow:hidden}
+.qty button{width:36px;height:36px;background:transparent;border:0;color:var(--bone);font-size:18px;cursor:pointer}
+.qty button:hover{color:var(--toxin)}
+.qty button:disabled{opacity:.35;cursor:default}
+.qty span{min-width:28px;text-align:center;font-family:"Space Mono",monospace;font-weight:700}
+.rm{background:none;border:0;color:var(--moss);font-size:13px;text-decoration:underline;cursor:pointer;margin-left:14px}
+.rm:hover{color:var(--toxin)}
+.lp{font-family:"Space Mono",monospace;font-weight:700;color:var(--toxin);text-align:right;white-space:nowrap}
+.side{position:sticky;top:96px}
+.free{font-size:13.5px;color:var(--bone-dim);margin-bottom:14px}
+.free b{color:var(--toxin)}
+.empty{padding:40px 0 10px;text-align:center}
+.empty p{color:var(--bone-dim);margin-bottom:24px}
+.cart-loading{color:var(--bone-dim);padding:30px 0}
+@media (max-width:900px){
+  .cartgrid{grid-template-columns:1fr;gap:30px}
+  .side{position:static}
+  .line{grid-template-columns:76px 1fr;gap:14px}
+  .line .th{width:76px}
+  .line .lp{grid-column:2;text-align:left}
+}
+`;
+
+function cartPage() {
+  const landOptions = shipping.verzendlanden.map((c) => `<option value="${esc(c)}">${esc(LANDEN[c] || c)}</option>`).join("");
+  const body = `
+<div class="wrap cartwrap">
+  <h1>Winkelmand</h1>
+  <div id="cartApp"><p class="cart-loading">Winkelmand laden…</p></div>
+  <noscript><p>Zet JavaScript aan om je winkelmand te gebruiken.</p></noscript>
+
+  <template id="tplCheckout">
+    <div class="cartgrid">
+      <div><ul class="lines" id="lines"></ul></div>
+      <aside class="side">
+        <form class="checkout" id="bestellen" novalidate style="margin-top:0">
+          <h2>Overzicht</h2>
+          <p class="free" id="freeHint" hidden></p>
+          <dl class="sum" style="margin-top:0">
+            <div><dt>Subtotaal</dt><dd id="sSub"></dd></div>
+            <div><dt>Verzending</dt><dd id="sShip"></dd></div>
+            <div class="tot"><dt>Totaal</dt><dd id="sTot"></dd></div>
+          </dl>
+          <h2 style="margin-top:26px">Bezorggegevens</h2>
+          <div class="f2">
+            <label class="full">Naam<input name="naam" autocomplete="name" required maxlength="80"></label>
+            <label class="full">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120"><small>Voor je bevestiging en track &amp; trace</small></label>
+            <label class="full">Straat en huisnummer<input name="adres" autocomplete="street-address" required maxlength="120"></label>
+            <label>Postcode<input name="postcode" autocomplete="postal-code" required maxlength="12"></label>
+            <label>Plaats<input name="plaats" autocomplete="address-level2" required maxlength="60"></label>
+            <label>Land<select name="land" autocomplete="country">${landOptions}</select></label>
+            <label><span>Telefoon <em>(optioneel)</em></span><input name="telefoon" type="tel" autocomplete="tel" maxlength="25"></label>
+            <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <button class="btn" type="submit" id="payBtn" style="margin-top:22px">Afrekenen</button>
+          <p class="form-msg" id="formMsg" role="alert"></p>
+          <p class="pay-note">Je gaat naar de beveiligde betaalpagina van Mollie (o.a. iDEAL).</p>
+        </form>
+      </aside>
+    </div>
+  </template>
+</div>
+<script>
+(function(){
+  "use strict";
+  var app = document.getElementById("cartApp");
+  var EMAIL = ${JSON.stringify(site.email || "").replace(/</g, "\\u003c")};
+  var useCdn = location.protocol === "https:" && !/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname);
+  function thumb(u){ return (!useCdn || !u || u.charAt(0) !== "/" || /\\.svg(\\?|$)/i.test(u)) ? u : "/.netlify/images?url=" + encodeURIComponent(u) + "&w=200&q=70"; }
+  function euro(c){ return "€" + (c / 100).toFixed(2).replace(".", ","); }
+  function el(tag, cls, text){ var e = document.createElement(tag); if(cls) e.className = cls; if(text != null) e.textContent = text; return e; }
+
+  var CAT = null, built = false;
+
+  function empty(){
+    app.innerHTML = "";
+    var d = el("div", "empty");
+    d.appendChild(el("p", null, "Je winkelmand is leeg."));
+    var a = el("a", "btn", "Naar de collectie"); a.href = "/#collectie"; d.appendChild(a);
+    app.appendChild(d);
+    built = false;
+  }
+
+  function render(){
+    if(!CAT || !window.DVCart) return;
+    var bySlug = {}; CAT.products.forEach(function(p){ bySlug[p.slug] = p; });
+    // producten die niet meer bestaan of maten die niet meer verkocht worden: stil weghalen
+    window.DVCart.items().forEach(function(x){
+      var p = bySlug[x.slug];
+      if(!p || p.maten.indexOf(x.maat) === -1) window.DVCart.remove(x.slug, x.maat);
+    });
+    var items = window.DVCart.items();
+    if(!items.length){ empty(); return; }
+
+    if(!built){
+      app.innerHTML = "";
+      app.appendChild(document.getElementById("tplCheckout").content.cloneNode(true));
+      built = true;
+      bindForm();
+    }
+    var ul = document.getElementById("lines"); ul.innerHTML = "";
+    var sub = 0, blocked = false;
+    items.forEach(function(x){
+      var p = bySlug[x.slug], cents = Math.round(p.prijs * 100);
+      var li = el("li", "line");
+      var th = el("a", "th"); th.href = p.url; th.tabIndex = -1; th.setAttribute("aria-hidden", "true");
+      var im = el("img"); im.alt = ""; im.loading = "lazy"; im.src = thumb(p.afbeelding);
+      im.onerror = function(){ im.onerror = null; im.src = p.afbeelding; };
+      th.appendChild(im); li.appendChild(th);
+
+      var mid = el("div");
+      var nm = el("a", "nm", p.naam); nm.href = p.url; mid.appendChild(nm);
+      mid.appendChild(el("p", "mt", "Maat " + x.maat + " · " + euro(cents)));
+      if(p.uitverkocht){ mid.appendChild(el("p", "warn", "Helaas uitverkocht — haal dit artikel weg om af te rekenen.")); blocked = true; }
+      var q = el("div", "qty");
+      var minus = el("button", null, "−"); minus.type = "button"; minus.setAttribute("aria-label", "Eén minder");
+      var n = el("span", null, String(x.aantal)); n.setAttribute("aria-label", "Aantal");
+      var plus = el("button", null, "+"); plus.type = "button"; plus.setAttribute("aria-label", "Eén meer");
+      minus.disabled = x.aantal <= 1; plus.disabled = x.aantal >= window.DVCart.MAX_QTY || p.uitverkocht;
+      minus.onclick = function(){ window.DVCart.setQty(x.slug, x.maat, x.aantal - 1); };
+      plus.onclick = function(){ window.DVCart.setQty(x.slug, x.maat, x.aantal + 1); };
+      q.appendChild(minus); q.appendChild(n); q.appendChild(plus);
+      var rm = el("button", "rm", "Verwijderen"); rm.type = "button";
+      rm.onclick = function(){ window.DVCart.remove(x.slug, x.maat); };
+      var row = el("div"); row.appendChild(q); row.appendChild(rm); mid.appendChild(row);
+      li.appendChild(mid);
+
+      li.appendChild(el("p", "lp", euro(cents * x.aantal)));
+      ul.appendChild(li);
+      if(!p.uitverkocht) sub += cents * x.aantal;
+    });
+
+    var drempel = Math.round(CAT.site.gratis_verzending_vanaf * 100), kosten = Math.round(CAT.site.verzendkosten * 100);
+    var ship = drempel > 0 && sub >= drempel ? 0 : kosten;
+    document.getElementById("sSub").textContent = euro(sub);
+    document.getElementById("sShip").textContent = ship === 0 ? "Gratis" : euro(ship);
+    document.getElementById("sTot").textContent = euro(sub + ship);
+    var hint = document.getElementById("freeHint");
+    if(drempel > 0 && sub < drempel){ hint.hidden = false; hint.innerHTML = ""; hint.appendChild(document.createTextNode("Nog ")); hint.appendChild(el("b", null, euro(drempel - sub))); hint.appendChild(document.createTextNode(" tot gratis verzending.")); }
+    else hint.hidden = true;
+    var pay = document.getElementById("payBtn");
+    if(!pay.dataset.busy){ pay.textContent = "Afrekenen — " + euro(sub + ship); pay.disabled = blocked; }
+  }
+
+  function mailFallback(){
+    var lines = window.DVCart.items().map(function(x){ return x.aantal + "x " + x.slug + " — maat " + x.maat; }).join("\\n");
+    return "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Bestelling via de website") +
+      "&body=" + encodeURIComponent("Hoi Dutch Venom,\\n\\nIk wil graag bestellen:\\n" + lines + "\\n\\nNaam:\\nAdres:\\nPostcode + plaats:\\n\\nGroet,");
+  }
+
+  function bindForm(){
+    var form = document.getElementById("bestellen"), msg = document.getElementById("formMsg"), pay = document.getElementById("payBtn");
+    form.addEventListener("input", function(){ if(msg.textContent && !pay.dataset.busy) msg.textContent = ""; });
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      msg.textContent = "";
+      var bad = Array.prototype.filter.call(form.querySelectorAll("[required]"), function(x){ return !x.value.trim(); });
+      if(bad.length){ msg.textContent = "Vul alle verplichte velden in."; bad[0].focus(); return; }
+      var data = { items: window.DVCart.items() };
+      Array.prototype.forEach.call(form.elements, function(x){ if(x.name) data[x.name] = x.value; });
+      pay.dataset.busy = "1"; pay.disabled = true; var label = pay.textContent; pay.textContent = "Even geduld…";
+      function done(){ delete pay.dataset.busy; pay.disabled = false; pay.textContent = label; }
+      fetch("/.netlify/functions/checkout", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(data) })
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {status: r.status, body: j}; }); })
+        .then(function(res){
+          if(res.body && res.body.checkoutUrl){ window.location.href = res.body.checkoutUrl; return; }
+          done();
+          if(res.status === 503 || res.status === 404){
+            msg.textContent = "Online betalen staat nog niet aan. ";
+            var a = el("a", null, "Bestel via e-mail"); a.href = mailFallback(); msg.appendChild(a);
+          } else {
+            msg.textContent = (res.body && res.body.error) || "Er ging iets mis. Probeer het opnieuw.";
+          }
+        })
+        .catch(function(){ done(); msg.textContent = "Geen verbinding. Probeer het opnieuw."; });
+    });
+  }
+
+  document.addEventListener("dvcart", render);
+  fetch("/assets/catalog.json", { cache: "no-cache" }).then(function(r){ return r.json(); })
+    .then(function(c){ CAT = c; (window.DVCart ? render() : window.addEventListener("load", render)); })
+    .catch(function(){ app.innerHTML = ""; app.appendChild(el("p", "cart-loading", "Winkelmand kon niet laden. Ververs de pagina.")); });
+})();
+</script>`;
+  return shell({ title: "Winkelmand | Dutch Venom", description: "Je winkelmand bij Dutch Venom.",
+    canonical: SITE_URL + "/winkelmand/", ogImage: SITE_URL + "/images/og-image.jpg",
+    head: { css: PRODUCT_CSS + CART_CSS }, body, noindex: true });
 }
 
 /* ---------- schrijven ---------- */
@@ -502,6 +659,17 @@ function write(rel, content) {
 fs.rmSync(path.join(ROOT, "product"), { recursive: true, force: true });
 products.forEach((p, i) => write(`product/${p._slug}/index.html`, productPage(p, i)));
 write("bedankt/index.html", thanksPage());
+write("winkelmand/index.html", cartPage());
+
+// Publieke catalogus voor het winkelmandje in de browser (alleen weergave; de server rekent zelf).
+write("assets/catalog.json", JSON.stringify({
+  site: shipping,
+  products: products.map((p) => ({
+    slug: p._slug, naam: p.naam, prijs: Number(p.prijs), url: p._url, afbeelding: p.afbeelding || "",
+    uitverkocht: !!p.uitverkocht,
+    maten: (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String),
+  })),
+}));
 
 // Catalogus voor de Mollie-functies: prijzen komen hier vandaan, niet uit de browser.
 const catalog = {
@@ -521,5 +689,5 @@ ${urls.map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).joi
 </urlset>
 `);
 
-console.log(`Gebouwd: ${products.length} productpagina's, /bedankt/, sitemap.xml, catalog.mjs`);
+console.log(`Gebouwd: ${products.length} productpagina's, /winkelmand/, /bedankt/, sitemap.xml, catalogi`);
 products.forEach((p) => console.log("  " + p._url));
