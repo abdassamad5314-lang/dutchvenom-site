@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Dutch Venom | Premium Streetwear, Tracksuits & Hoodies uit Nederland</title>
-  <meta name="description" content="Shop premium streetwear van Dutch Venom: tracksuits, hoodies, joggers en accessoires voor heren en dames. Limited drops, verzending binnen 24 uur, gratis vanaf €75.">
+  <title>Dutch Venom | Premium Tracksuits & Streetwear voor Heren en Dames</title>
+  <meta name="description" content="Shop premium tracksuits van Dutch Venom voor heren en dames, plus de DV Crossbody Bag. Limited drops, veilig betalen met iDEAL, gratis verzending vanaf €75 in Nederland en België.">
   <link rel="canonical" href="https://www.dutchvenom.nl/">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0C1310">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Dutch Venom">
-  <meta property="og:title" content="Dutch Venom | Premium Streetwear uit Nederland">
-  <meta property="og:description" content="Tracksuits, hoodies en accessoires. Limited drops, snelle verzending.">
+  <meta property="og:title" content="Dutch Venom | Premium Tracksuits & Streetwear">
+  <meta property="og:description" content="Signature tracksuits voor heren en dames. Limited drops, veilig betalen met iDEAL.">
   <meta property="og:url" content="https://www.dutchvenom.nl/">
   <meta property="og:image" content="https://www.dutchvenom.nl/images/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -25,7 +25,7 @@
     "name": "Dutch Venom",
     "url": "https://www.dutchvenom.nl/",
     "logo": "https://www.dutchvenom.nl/images/og-image.jpg",
-    "description": "Nederlands streetwear label: tracksuits, hoodies en accessoires in limited drops.",
+    "description": "Nederlands streetwear label: tracksuits en accessoires in limited drops.",
     "areaServed": "NL"
   }
   </script>
@@ -303,6 +303,20 @@
       overflow:hidden;border:1px solid var(--line);background:var(--serpent);
     }
     .about-visual svg{position:absolute;inset:0;width:100%;height:100%}
+    .about-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+    .about-visual.has-photo svg{display:none}
+    .nieuws{border-top:1px solid var(--line);padding:84px 0}
+    .nieuws-in{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+    .nieuws h2{margin-bottom:14px}
+    .nieuws-in > div > p:not(.eyebrow){color:var(--bone-dim);max-width:46ch}
+    .nb-row{display:flex;gap:10px}
+    .nb-row input{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--bone);background:var(--serpent);border:1px solid var(--line);border-radius:100px;padding:15px 20px}
+    .nb-row input:focus{outline:none;border-color:var(--toxin)}
+    .nb-note{font-size:13px;color:var(--moss);margin-top:12px}
+    .nb-note a{color:var(--bone-dim)}
+    .nb-msg{font-size:14.5px;margin-top:10px;min-height:1.4em;color:var(--toxin)}
+    .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .foot-legal{display:flex;gap:6px 18px;flex-wrap:wrap}
     .about h2{margin-bottom:22px}
     .about p{color:var(--bone-dim);margin-bottom:16px}
     .about .mono-note{
@@ -332,6 +346,8 @@
     .foot-brand{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:118%;font-size:26px;letter-spacing:.05em;margin-bottom:14px}
     .foot-brand span{color:var(--toxin)}
     .foot-desc{color:var(--bone-dim);font-size:15px;max-width:36ch}
+    .foot-bottom a{color:var(--moss);text-decoration:none}
+    .foot-bottom a:hover{color:var(--toxin)}
     .foot-bottom{
       border-top:1px solid var(--line);padding-top:26px;
       display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
@@ -351,6 +367,7 @@
     @media (max-width:980px){
       .grid{grid-template-columns:repeat(2,1fr)}
       .about{grid-template-columns:1fr;gap:44px}
+      .nieuws-in{grid-template-columns:1fr;gap:26px}
       .usps .wrap{grid-template-columns:1fr}
       .usp{border-left:none;border-top:1px solid var(--line)}
       .usp:first-child{border-top:none}
@@ -370,12 +387,13 @@
       section{padding:72px 0}
       .btn.ghost{margin-left:0;margin-top:12px}
       .foot-grid{grid-template-columns:1fr}
+      .nb-row{flex-direction:column}
     }
   </style>
 </head>
 <body>
 
-  <div class="announce" id="announce">Gratis verzending vanaf €75 · Voor 16:00 besteld = morgen in huis</div>
+  <div class="announce" id="announce">Gratis verzending vanaf €75 · Nederland &amp; België</div>
 
   <header>
     <div class="wrap nav">
@@ -422,7 +440,7 @@
       <div class="wrap hero-inner">
         <p class="eyebrow">Nederlands streetwear label</p>
         <h1 id="heroTitle">Streetwear met <span class="venom">gif</span> erin</h1>
-        <p class="hero-sub" id="heroSub">Premium tracksuits, hoodies en accessoires. Ontworpen in Nederland, gedragen door iedereen die opvalt.</p>
+        <p class="hero-sub" id="heroSub">Premium tracksuits en accessoires voor heren en dames. Gemaakt voor iedereen die opvalt.</p>
         <div>
           <a class="btn" href="#collectie" id="heroBtn">Shop de collectie
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -477,11 +495,11 @@
         </div>
         <div class="usp reveal">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-          <p id="usp2">Verzending binnen 24 uur</p>
+          <p id="usp2">Verzending naar NL &amp; België</p>
         </div>
         <div class="usp reveal">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2m0-6-2 2 2 2m-2-2h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p id="usp3">14 dagen retourrecht</p>
+          <p id="usp3">14 dagen bedenktijd</p>
         </div>
       </div>
     </div>
@@ -489,11 +507,12 @@
     <!-- ================= OVER ================= -->
     <section id="over">
       <div class="wrap about">
-        <div class="about-visual reveal" aria-hidden="true">
-          <svg preserveAspectRatio="xMidYMid slice">
+        <div class="about-visual reveal">
+          <img id="overFoto" src="/images/uploads/sfeer-auto-heren-rood-groen.webp" alt="Twee mannen in een rood en een groen Dutch Venom trainingspak bij een auto" loading="lazy">
+          <svg preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             <rect width="100%" height="100%" fill="url(#scales)"/>
           </svg>
-          <svg viewBox="0 0 24 24" fill="none" style="position:absolute;inset:22%;opacity:.9">
+          <svg viewBox="0 0 24 24" fill="none" style="position:absolute;inset:22%;opacity:.9" aria-hidden="true" id="overMark">
             <path d="M3 4l9 16L21 4h-4.5L12 13 7.5 4H3z" fill="#D9A441"/>
           </svg>
         </div>
@@ -506,6 +525,28 @@
       </div>
     </section>
 
+    <!-- ================= NIEUWSBRIEF ================= -->
+    <section class="nieuws" id="nieuwsbrief">
+      <div class="wrap nieuws-in reveal">
+        <div>
+          <p class="eyebrow">Nieuwe drops</p>
+          <h2>Mis geen drop</h2>
+          <p>Schrijf je in en hoor als eerste wanneer er een nieuwe drop live gaat. Geen spam, en je kunt je altijd weer uitschrijven.</p>
+        </div>
+        <form name="nieuwsbrief" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="nbForm" action="/?inschrijving=ok#nieuwsbrief">
+          <input type="hidden" name="form-name" value="nieuwsbrief">
+          <p hidden><label>Niet invullen <input name="bot-field"></label></p>
+          <label class="sr" for="nbEmail">E-mailadres</label>
+          <div class="nb-row">
+            <input id="nbEmail" type="email" name="email" required maxlength="120" placeholder="Je e-mailadres" autocomplete="email">
+            <button class="btn" type="submit">Inschrijven</button>
+          </div>
+          <p class="nb-note">Door je in te schrijven ga je akkoord met onze <a href="/privacy/">privacyverklaring</a>.</p>
+          <p class="nb-msg" id="nbMsg" role="status"></p>
+        </form>
+      </div>
+    </section>
+
     <!-- ================= FAQ ================= -->
     <section id="faq" style="background:var(--serpent-deep);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
       <div class="wrap">
@@ -513,23 +554,27 @@
         <div class="faq reveal">
           <details>
             <summary>Hoe snel wordt mijn bestelling verzonden?</summary>
-            <p>Bestellingen die voor 16:00 binnenkomen worden dezelfde dag verzonden. Binnen Nederland heb je je pakket meestal de volgende werkdag in huis.</p>
+            <p>We pakken je bestelling zo snel mogelijk in en verzenden hem naar Nederland of België. Zodra je pakket onderweg is, krijg je een mail. Heb je een vraag over je bestelling? Mail ons op <a href="mailto:info@dutchvenom.nl">info@dutchvenom.nl</a>.</p>
           </details>
           <details>
             <summary>Wat zijn de verzendkosten?</summary>
-            <p>Verzending binnen Nederland is gratis vanaf €75. Daaronder betaal je €4,95. We verzenden ook naar België.</p>
+            <p>Verzending kost €4,95. Vanaf €75 verzenden we gratis. We verzenden naar Nederland en België.</p>
           </details>
           <details>
-            <summary>Kan ik mijn bestelling retourneren?</summary>
-            <p>Ja, je hebt 14 dagen retourrecht. Items moeten ongedragen zijn en de labels moeten er nog aan zitten. Mail ons en we regelen het.</p>
+            <summary>Hoe kan ik betalen?</summary>
+            <p>Je rekent veilig af via Mollie, onder andere met iDEAL. Je bestelling wordt pas verwerkt als je betaling binnen is.</p>
+          </details>
+          <details>
+            <summary>Kan ik mijn bestelling retourneren of ruilen?</summary>
+            <p>Ja. Je hebt 14 dagen bedenktijd na ontvangst. Het artikel moet ongedragen zijn en de labels moeten er nog aan zitten. De retourkosten zijn voor eigen rekening. Ruilen voor een andere maat kan ook. Lees hoe het werkt op de pagina <a href="/retourneren/">retourneren</a>.</p>
           </details>
           <details>
             <summary>Komen uitverkochte items terug?</summary>
-            <p>Nee. Onze drops zijn limited: als een item uitverkocht is, komt het niet terug. Volg ons op Instagram om nieuwe drops niet te missen.</p>
+            <p>Nee. Onze drops zijn limited: als een item uitverkocht is, komt het niet terug. Schrijf je in voor de nieuwsbrief of volg ons op Instagram om nieuwe drops niet te missen.</p>
           </details>
           <details>
-            <summary>Hoe vallen de maten?</summary>
-            <p>Onze tracksuits en hoodies hebben een oversized fit. Wil je het strakker? Bestel dan een maat kleiner. Bij elk product staat een maatadvies.</p>
+            <summary>Welke maat moet ik nemen?</summary>
+            <p>Op elke productpagina zie je welke maten er zijn. Twijfel je tussen twee maten? Mail ons op <a href="mailto:info@dutchvenom.nl">info@dutchvenom.nl</a>, dan denken we met je mee.</p>
           </details>
         </div>
       </div>
@@ -541,7 +586,7 @@
         <div class="foot-grid">
           <div>
             <p class="foot-brand">DUTCH<span>VENOM</span></p>
-            <p class="foot-desc" id="footDesc">Premium streetwear uit Nederland. Tracksuits, hoodies en accessoires in limited drops.</p>
+            <p class="foot-desc" id="footDesc">Premium streetwear uit Nederland. Signature tracksuits en accessoires in limited drops.</p>
           </div>
           <div>
             <h3>Menu</h3>
@@ -550,20 +595,22 @@
               <li><a href="#collectie">Collectie</a></li>
               <li><a href="#over">Over ons</a></li>
               <li><a href="#faq">FAQ</a></li>
+              <li><a href="#nieuwsbrief">Nieuwsbrief</a></li>
             </ul>
           </div>
           <div>
             <h3>Contact</h3>
             <ul>
               <li><a href="mailto:info@dutchvenom.nl" id="footEmail">info@dutchvenom.nl</a></li>
-              <li><a href="https://instagram.com/dutchvenom" id="footInsta" rel="noopener" target="_blank">Instagram</a></li>
-              <li><a href="https://tiktok.com/@dutchvenom" id="footTiktok" rel="noopener" target="_blank">TikTok</a></li>
+              <li><a href="/contact/">Contactgegevens</a></li>
+              <li><a href="https://www.instagram.com/dtchvenom/" id="footInsta" rel="noopener" target="_blank">Instagram</a></li>
+              <li id="footTiktokLi" hidden><a href="#" id="footTiktok" rel="noopener" target="_blank">TikTok</a></li>
             </ul>
           </div>
         </div>
         <div class="foot-bottom">
-          <span>© <span id="year"></span> Dutch Venom — Alle rechten voorbehouden</span>
-          <span>KVK &amp; BTW op aanvraag · NL</span>
+          <span>© <span id="year"></span> Dutch Venom · <span id="footReg">KvK 42063600 · Btw NL869540178B01</span></span>
+          <span class="foot-legal"><a href="/retourneren/">Retourneren</a><a href="/voorwaarden/">Algemene voorwaarden</a><a href="/privacy/">Privacy</a></span>
         </div>
       </div>
     </footer>
@@ -887,8 +934,17 @@
       var btn = document.getElementById("heroBtn");
       if(s.hero_knop_tekst) btn.childNodes[0].textContent = s.hero_knop_tekst + " ";
       if(s.email){ document.getElementById("footEmail").href = "mailto:" + s.email; }
-      if(s.instagram){ document.getElementById("footInsta").href = s.instagram; }
-      if(s.tiktok){ document.getElementById("footTiktok").href = s.tiktok; }
+      var ig = document.getElementById("footInsta");
+      if(s.instagram){ ig.href = s.instagram; } else if(ig) { ig.parentNode.hidden = true; }
+      if(s.tiktok){ document.getElementById("footTiktok").href = s.tiktok; document.getElementById("footTiktokLi").hidden = false; }
+      if(s.kvk || s.btw){
+        document.getElementById("footReg").textContent = [s.kvk ? "KvK " + s.kvk : "", s.btw ? "Btw " + s.btw : ""].filter(Boolean).join(" · ");
+      }
+      var of = document.getElementById("overFoto");
+      if(of){
+        if(s.over_foto){ setImg(of, s.over_foto, "(max-width:980px) 92vw, 520px"); of.parentNode.classList.add("has-photo"); }
+        else { of.remove(); }
+      }
       if(s.seo_titel) document.title = s.seo_titel;
       if(s.seo_beschrijving){
         var m = document.querySelector('meta[name="description"]');
@@ -902,6 +958,22 @@
         document.querySelector(".hero").classList.add("has-video");
         hv.play().catch(function(){});
       }
+    }
+
+    /* nieuwsbrief: versturen zonder pagina te verlaten (valt terug op gewoon versturen) */
+    var nb = document.getElementById("nbForm");
+    if(nb){
+      if(/inschrijving=ok/.test(location.search)) document.getElementById("nbMsg").textContent = "Top, je bent ingeschreven!";
+      nb.addEventListener("submit", function(e){
+        e.preventDefault();
+        var msg = document.getElementById("nbMsg"), email = document.getElementById("nbEmail");
+        if(!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())){ msg.textContent = "Vul een geldig e-mailadres in."; email.focus(); return; }
+        var btn = nb.querySelector("button"); btn.disabled = true;
+        fetch("/", { method: "POST", headers: {"Content-Type": "application/x-www-form-urlencoded"}, body: new URLSearchParams(new FormData(nb)).toString() })
+          .then(function(r){ if(!r.ok) throw new Error(); msg.textContent = "Top, je bent ingeschreven!"; nb.reset(); })
+          .catch(function(){ msg.textContent = "Inschrijven lukte niet. Probeer het later opnieuw."; })
+          .then(function(){ btn.disabled = false; });
+      });
     }
 
     fetch("/content/bundles.json").then(function(r){ return r.json(); })

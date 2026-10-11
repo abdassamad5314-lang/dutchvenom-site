@@ -75,6 +75,16 @@ Zet de API-sleutel nooit in een bestand of in het admin-paneel: alleen in de omg
 
 Zolang `MOLLIE_API_KEY` niet is ingesteld, toont het formulier "Online betalen staat nog niet aan" met een link om via e-mail te bestellen.
 
+## Voorraad, maattabel en bedrijfsgegevens (admin)
+
+- **Producten → Uitverkochte maten**: aangevinkte maten worden doorgestreept en kunnen niet besteld worden (ook niet via een trucje: de server controleert het). "Uitverkocht (alle maten)" zet het hele product uit.
+- **Producten → Pasvorm / Materiaal / Wasvoorschrift**: verschijnen op de productpagina zodra ze zijn ingevuld.
+- **Site-instellingen → Maattabel heren / dames**: in cm, platliggend gemeten. De tabel verschijnt automatisch op de productpagina's zodra er een maat is ingevuld.
+- **Site-instellingen → KvK, btw, adres**: worden gebruikt in de footer en op de pagina's Contact, Retourneren, Algemene voorwaarden en Privacy. Zolang het adres leeg is, staat er "op aanvraag via e-mail".
+- **Nieuwsbrief**: inschrijvingen komen binnen in Netlify bij Forms → *nieuwsbrief*.
+
+De juridische teksten staan in `scripts/legal.js`. Dit zijn concepten: laat ze nakijken.
+
 ## Video's (Higgsfield-workflow)
 
 De site ondersteunt video op twee plekken, beide via het admin-paneel:

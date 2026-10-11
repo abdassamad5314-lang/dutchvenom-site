@@ -30,6 +30,29 @@ const shipping = {
   verzendlanden: Array.isArray(site.verzendlanden) && site.verzendlanden.length ? site.verzendlanden.map(String) : ["NL"],
 };
 const LANDEN = { NL: "Nederland", BE: "België", DE: "Duitsland", FR: "Frankrijk", LU: "Luxemburg" };
+const landenTekst = (codes) => {
+  const n = codes.map((c) => LANDEN[c] || c);
+  return n.length > 1 ? n.slice(0, -1).join(", ") + " en " + n[n.length - 1] : n[0] || "";
+};
+const sizesOf = (p) => (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String);
+const soldSizesOf = (p) => (Array.isArray(p.uitverkochte_maten) ? p.uitverkochte_maten.map(String) : []);
+const isSoldOut = (p) => !!p.uitverkocht || sizesOf(p).every((m) => soldSizesOf(p).includes(m));
+const euroShort = (n) => "€" + (Number(n) % 1 === 0 ? String(Number(n)) : Number(n).toFixed(2).replace(".", ","));
+function verzendTekst() {
+  const k = shipping.verzendkosten, g = shipping.gratis_verzending_vanaf;
+  const kosten = k > 0 ? `Verzendkosten ${euro(k)}` : "Gratis verzending";
+  return `${kosten}${k > 0 && g > 0 ? `, gratis vanaf ${euroShort(g)}` : ""}. We verzenden naar ${landenTekst(shipping.verzendlanden)}.`;
+}
+function maattabelHtml(cat) {
+  const rows = (cat === "Dames" ? site.maattabel_dames : cat === "Heren" ? site.maattabel_heren : null) || [];
+  const filled = rows.filter((r) => r && r.maat && (r.borst || r.lengte || r.mouw || r.broek));
+  if (!filled.length) return "";
+  const cols = [["borst", "Borstwijdte"], ["lengte", "Lengte"], ["mouw", "Mouw"], ["broek", "Broeklengte"]]
+    .filter(([k]) => filled.some((r) => r[k]));
+  return `<table class="sizetable"><thead><tr><th>Maat</th>${cols.map(([, l]) => `<th>${l}</th>`).join("")}</tr></thead><tbody>` +
+    filled.map((r) => `<tr><th>${esc(r.maat)}</th>${cols.map(([k]) => `<td>${r[k] ? esc(r[k]) + " cm" : "–"}</td>`).join("")}</tr>`).join("") +
+    `</tbody></table><p class="sizenote">Gemeten op het platliggende kledingstuk.</p>`;
+}
 
 
 /* ---------- hulpfuncties ---------- */
@@ -107,7 +130,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(12,19,16,.86);backdrop-f
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--toxin);outline-offset:3px;border-radius:4px}
 footer{border-top:1px solid var(--line);background:var(--serpent-deep);padding:40px 0;margin-top:90px}
 .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:"Space Mono",monospace;font-size:12.5px;color:var(--moss)}
-.foot a{color:var(--bone-dim);text-decoration:none;margin-right:18px}
+.foot a{color:var(--bone-dim);text-decoration:none;margin-right:18px;line-height:2.2}
 .foot a:hover{color:var(--toxin)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 `;
@@ -137,6 +160,14 @@ h1{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:108%;font-size:
 .sizes button{min-width:64px;padding:13px 16px;font-family:"Space Mono",monospace;font-size:14px;font-weight:700;background:transparent;color:var(--bone);border:1px solid var(--line);border-radius:10px;cursor:pointer;transition:all .15s}
 .sizes button:hover{border-color:var(--bone-dim)}
 .sizes button[aria-pressed="true"]{background:var(--bone);color:var(--nightscale);border-color:var(--bone)}
+.sizes button:disabled{opacity:.38;text-decoration:line-through;cursor:not-allowed}
+.sizes button:disabled:hover{border-color:var(--line)}
+.soldnote{font-size:13px;color:var(--moss);margin:-2px 0 8px}
+.fit a,.trust a,details a{color:var(--toxin)}
+.sizetable{width:100%;border-collapse:collapse;font-size:14px;margin:0 0 12px}
+.sizetable th,.sizetable td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+.sizetable thead th{font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--moss)}
+.sizenote{font-size:12.5px!important;padding-bottom:6px!important}
 .fit{font-size:14px;color:var(--bone-dim);margin-bottom:24px}
 .order .btn{width:100%}
 .order-note{font-size:13.5px;color:var(--moss);margin-top:12px;min-height:1.6em;text-align:center}
@@ -234,7 +265,7 @@ ${site.aankondiging ? `<div class="announce">${esc(site.aankondiging)}</div>` : 
 ${body}
 </main>
 <footer><div class="wrap foot">
-  <span>© ${new Date().getFullYear()} Dutch Venom</span>
+  <span>© ${new Date().getFullYear()} Dutch Venom${site.kvk ? " · KvK " + esc(site.kvk) : ""}${site.btw ? " · Btw " + esc(site.btw) : ""}<br><a href="/contact/">Contact</a><a href="/retourneren/">Retourneren</a><a href="/voorwaarden/">Algemene voorwaarden</a><a href="/privacy/">Privacy</a></span>
   <span>${site.email ? `<a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : ""}${site.instagram ? `<a href="${esc(site.instagram)}" target="_blank" rel="noopener">Instagram</a>` : ""}${site.tiktok ? `<a href="${esc(site.tiktok)}" target="_blank" rel="noopener">TikTok</a>` : ""}</span>
 </div></footer>
 </body>
@@ -253,8 +284,9 @@ const ICON = {
 function productPage(p, i) {
   const photos = [p.afbeelding].concat(Array.isArray(p.extra_fotos) ? p.extra_fotos : [])
     .map((x) => (x && typeof x === "object" ? x.foto : x)).filter(Boolean);
-  const sizes = (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String);
-  const sold = !!p.uitverkocht;
+  const sizes = sizesOf(p);
+  const soldSizes = soldSizesOf(p);
+  const sold = isSoldOut(p);
   const single = sizes.length === 1;
   const priceHtml = (hasPrice(p.oude_prijs) ? `<s>${euro(p.oude_prijs)}</s>` : "") + euro(p.prijs);
   const badge = sold ? `<span class="badge out">Uitverkocht</span>` : (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : "");
@@ -269,10 +301,18 @@ function productPage(p, i) {
         `<button type="button" data-src="${esc(u)}" aria-label="Foto ${k + 1}"${k === 0 ? ' aria-current="true"' : ""}>${img(u, "", "84px", 'loading="lazy"')}</button>`).join("")}</div>`
     : "";
 
-  const sizeButtons = sizes.map((s) =>
-    `<button type="button" data-size="${esc(s)}" aria-pressed="${single ? "true" : "false"}"${sold ? " disabled" : ""}>${esc(s)}</button>`).join("");
+  const sizeButtons = sizes.map((s) => {
+    const out = sold || soldSizes.includes(s);
+    return `<button type="button" data-size="${esc(s)}" aria-pressed="${single && !out ? "true" : "false"}"${out ? ` disabled aria-label="${esc(s)}, uitverkocht" title="Uitverkocht"` : ""}>${esc(s)}</button>`;
+  }).join("");
+  const soldNote = !sold && soldSizes.filter((m) => sizes.includes(m)).length
+    ? `<p class="soldnote">Uitverkocht in maat ${soldSizes.filter((m) => sizes.includes(m)).join(", ")}.</p>` : "";
+  const fitText = p.pasvorm ? esc(p.pasvorm) : "";
+  const tabel = maattabelHtml(p.categorie);
+  const matHtml = (p.materiaal || p.wasvoorschrift)
+    ? `<details><summary>Materiaal &amp; verzorging</summary><p>${p.materiaal ? "<strong>Materiaal:</strong> " + esc(p.materiaal) + "<br>" : ""}${p.wasvoorschrift ? "<strong>Wassen:</strong> " + esc(p.wasvoorschrift) : ""}</p></details>` : "";
 
-  const related = products.filter((q, k) => k !== i && !q.uitverkocht)
+  const related = products.filter((q, k) => k !== i && !isSoldOut(q))
     .sort((a, b) => (b.categorie === p.categorie) - (a.categorie === p.categorie)).slice(0, 3);
   const relatedHtml = related.length ? `<section class="related"><h2>Ook iets voor jou</h2><div class="rgrid">${related.map((q) =>
     `<a class="rcard" href="${q._url}"><div class="ri">${img(q.afbeelding, q.alt_tekst || q.naam, "(max-width:900px) 46vw, 380px", 'loading="lazy"')}</div>` +
@@ -283,7 +323,7 @@ function productPage(p, i) {
     name: p.naam, description: p.beschrijving || "", image: photos.filter(isRaster).map(abs),
     brand: { "@type": "Brand", name: "Dutch Venom" }, category: p.categorie || undefined,
     offers: { "@type": "Offer", url: canonical, priceCurrency: "EUR", price: Number(p.prijs).toFixed(2),
-      availability: sold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock" },
+      availability: sold ? "https://schema.org/OutOfStock" : soldSizes.length ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock" },
   };
 
   const cfg = { slug: p._slug, naam: p.naam, sold, single, prijs: euro(p.prijs) };
@@ -300,12 +340,13 @@ function productPage(p, i) {
       <p class="cat">${esc(p.categorie || "")}</p>
       <h1>${esc(p.naam)}</h1>
       <p class="price">${priceHtml}</p>
-      <p class="vat">Incl. btw${site.aankondiging && /gratis verzending/i.test(site.aankondiging) ? " · " + esc(site.aankondiging.split("·")[0].trim()) : ""}</p>
+      <p class="vat">Incl. btw${shipping.verzendkosten > 0 && shipping.gratis_verzending_vanaf > 0 ? " · Gratis verzending vanaf " + euroShort(shipping.gratis_verzending_vanaf) : ""}</p>
       <p class="desc">${esc(p.beschrijving || "")}</p>
 
-      <div class="size-head"><span>${single ? "Maat" : "Kies je maat"}</span><small>Oversized fit</small></div>
+      <div class="size-head"><span>${single ? "Maat" : "Kies je maat"}</span>${fitText ? `<small>${fitText}</small>` : ""}</div>
       <div class="sizes" role="group" aria-label="Maat">${sizeButtons}</div>
-      <p class="fit">${single ? "Eén maat, verstelbaar." : "Tussen twee maten? Neem de kleinste voor een normale pasvorm, je gewone maat voor oversized."}</p>
+      ${soldNote}
+      <p class="fit">${single ? "Eén maat, verstelbare band." : "Twijfel je over je maat? Mail ons" + (site.email ? ` op <a href="mailto:${esc(site.email)}">${esc(site.email)}</a>` : "") + ", we helpen je graag."}</p>
 
       <div class="order">
         <button class="btn" type="button" id="orderBtn" aria-disabled="true"${sold ? " disabled" : ""}>${sold ? "Uitverkocht" : single ? "In winkelmand — " + euro(p.prijs) : "Kies eerst je maat"}</button>
@@ -313,12 +354,13 @@ function productPage(p, i) {
       </div>
 
       <ul class="trust">
-        <li>${ICON.truck}<span>${esc(site.usp_2 || "Snelle verzending")}</span></li>
-        <li>${ICON.ret}<span>${esc(site.usp_3 || "14 dagen retourrecht")}</span></li>
+        <li>${ICON.truck}<span>Verzending naar ${esc(landenTekst(shipping.verzendlanden))}</span></li>
+        <li>${ICON.ret}<span>14 dagen bedenktijd · <a href="/retourneren/">retourneren</a></span></li>
         <li>${ICON.lock}<span>Veilig betalen via Mollie, o.a. met iDEAL</span></li>
       </ul>
-      <details><summary>Maat &amp; pasvorm</summary><p>Onze tracksuits hebben een oversized fit. Wil je het strakker, bestel dan een maat kleiner. Twijfel je? Mail ons${site.email ? " op " + esc(site.email) : ""} en we helpen je kiezen.</p></details>
-      <details><summary>Verzending &amp; retour</summary><p>${esc(site.aankondiging || "")}${site.aankondiging ? ". " : ""}${esc(site.usp_3 || "")}: items ongedragen en met labels terugsturen. Mail ons en we regelen het.</p></details>
+      ${!single ? `<details><summary>Maat &amp; pasvorm</summary>${tabel}<p>${fitText ? fitText + ". " : ""}Twijfel je tussen twee maten? Mail ons${site.email ? " op " + esc(site.email) : ""}, dan denken we met je mee.</p></details>` : ""}
+      ${matHtml}
+      <details><summary>Verzending &amp; retour</summary><p>${esc(verzendTekst())} Je hebt 14 dagen bedenktijd. Retourneren kan als het artikel ongedragen is en de labels er nog aan zitten; de retourkosten zijn voor eigen rekening. Ruilen voor een andere maat kan ook. <a href="/retourneren/">Meer over retourneren</a>.</p></details>
     </div>
   </article>
   ${relatedHtml}
@@ -331,7 +373,7 @@ function productPage(p, i) {
   var C = ${JSON.stringify(cfg).replace(/</g, "\\u003c")};
   var btn = document.getElementById("orderBtn"), note = document.getElementById("orderNote");
   var main = document.getElementById("mainImg");
-  var first = document.querySelector(".sizes button");
+  var first = document.querySelector(".sizes button:not([disabled])");
   var chosen = C.single && first ? first.getAttribute("data-size") : null;
 
   function update(){
@@ -572,12 +614,13 @@ function cartPage() {
       var mid = el("div");
       var nm = el("a", "nm", p.naam); nm.href = p.url; mid.appendChild(nm);
       mid.appendChild(el("p", "mt", "Maat " + x.maat + " · " + euro(cents)));
-      if(p.uitverkocht){ mid.appendChild(el("p", "warn", "Helaas uitverkocht — haal dit artikel weg om af te rekenen.")); blocked = true; }
+      var out = p.uitverkocht || (p.uitverkochte_maten || []).indexOf(x.maat) !== -1;
+      if(out){ mid.appendChild(el("p", "warn", "Helaas uitverkocht in deze maat — haal dit artikel weg om af te rekenen.")); blocked = true; }
       var q = el("div", "qty");
       var minus = el("button", null, "−"); minus.type = "button"; minus.setAttribute("aria-label", "Eén minder");
       var n = el("span", null, String(x.aantal)); n.setAttribute("aria-label", "Aantal");
       var plus = el("button", null, "+"); plus.type = "button"; plus.setAttribute("aria-label", "Eén meer");
-      minus.disabled = x.aantal <= 1; plus.disabled = x.aantal >= window.DVCart.MAX_QTY || p.uitverkocht;
+      minus.disabled = x.aantal <= 1; plus.disabled = x.aantal >= window.DVCart.MAX_QTY || out;
       minus.onclick = function(){ window.DVCart.setQty(x.slug, x.maat, x.aantal - 1); };
       plus.onclick = function(){ window.DVCart.setQty(x.slug, x.maat, x.aantal + 1); };
       q.appendChild(minus); q.appendChild(n); q.appendChild(plus);
@@ -588,7 +631,7 @@ function cartPage() {
 
       li.appendChild(el("p", "lp", euro(cents * x.aantal)));
       ul.appendChild(li);
-      if(!p.uitverkocht) sub += cents * x.aantal;
+      if(!out) sub += cents * x.aantal;
     });
 
     var drempel = Math.round(CAT.site.gratis_verzending_vanaf * 100), kosten = Math.round(CAT.site.verzendkosten * 100);
@@ -648,6 +691,41 @@ function cartPage() {
     head: { css: PRODUCT_CSS + CART_CSS }, body, noindex: true });
 }
 
+/* ---------- juridische pagina's ---------- */
+
+const LEGAL_CSS = `
+.legal{max-width:760px;padding-top:44px}
+.legal h1{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:108%;font-size:clamp(32px,4.6vw,52px);line-height:1;text-transform:uppercase;margin-bottom:16px}
+.legal .lead{color:var(--bone-dim);font-size:18px;margin-bottom:34px}
+.legal h2{font-family:"Archivo",sans-serif;font-weight:800;font-size:20px;margin:34px 0 10px}
+.legal p,.legal li{color:var(--bone-dim);margin-bottom:12px}
+.legal ul,.legal ol{padding-left:22px;margin-bottom:12px}
+.legal a{color:var(--toxin)}
+.legal strong{color:var(--bone)}
+.ids{border-top:1px solid var(--line);margin:8px 0 22px}
+.ids div{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.ids dt{font-family:"Space Mono",monospace;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--moss)}
+.ids dd{color:var(--bone)}
+.formbox{border:1px dashed var(--line);border-radius:var(--radius);padding:20px 22px;margin-top:10px}
+.upd{font-size:13px;color:var(--moss)!important;margin-top:40px}
+@media (max-width:600px){.ids div{grid-template-columns:1fr;gap:2px}}
+`;
+
+function legalPages() {
+  const pages = require("./legal.js")(site, { esc, euro, shipping, landenTekst });
+  return Object.keys(pages).map((key) => {
+    const pg = pages[key];
+    const body = `
+<div class="wrap legal">
+  <h1>${esc(pg.title)}</h1>
+  <p class="lead">${pg.lead}</p>
+  ${pg.body}
+</div>`;
+    return { path: `${key}/index.html`, html: shell({ title: `${pg.title} | Dutch Venom`, description: `${pg.title} van Dutch Venom.`,
+      canonical: `${SITE_URL}/${key}/`, ogImage: SITE_URL + "/images/og-image.jpg", head: { css: LEGAL_CSS }, body }) };
+  });
+}
+
 /* ---------- schrijven ---------- */
 
 function write(rel, content) {
@@ -660,14 +738,15 @@ fs.rmSync(path.join(ROOT, "product"), { recursive: true, force: true });
 products.forEach((p, i) => write(`product/${p._slug}/index.html`, productPage(p, i)));
 write("bedankt/index.html", thanksPage());
 write("winkelmand/index.html", cartPage());
+legalPages().forEach((p) => write(p.path, p.html));
 
 // Publieke catalogus voor het winkelmandje in de browser (alleen weergave; de server rekent zelf).
 write("assets/catalog.json", JSON.stringify({
   site: shipping,
   products: products.map((p) => ({
     slug: p._slug, naam: p.naam, prijs: Number(p.prijs), url: p._url, afbeelding: p.afbeelding || "",
-    uitverkocht: !!p.uitverkocht,
-    maten: (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String),
+    uitverkocht: isSoldOut(p),
+    maten: sizesOf(p), uitverkochte_maten: soldSizesOf(p),
   })),
 }));
 
@@ -675,19 +754,20 @@ write("assets/catalog.json", JSON.stringify({
 const catalog = {
   site: shipping,
   products: products.map((p) => ({
-    slug: p._slug, naam: p.naam, prijs: Number(p.prijs), uitverkocht: !!p.uitverkocht,
-    maten: (Array.isArray(p.maten) && p.maten.length ? p.maten : ["S", "M", "L", "XL"]).map(String),
+    slug: p._slug, naam: p.naam, prijs: Number(p.prijs), uitverkocht: isSoldOut(p),
+    maten: sizesOf(p), uitverkochte_maten: soldSizesOf(p),
   })),
 };
 write("netlify/shared/catalog.mjs", "// Automatisch gemaakt door scripts/build.js — niet handmatig aanpassen.\nexport default " + JSON.stringify(catalog, null, 2) + ";\n");
 
 const today = new Date().toISOString().slice(0, 10);
-const urls = [SITE_URL + "/"].concat(products.map((p) => SITE_URL + p._url));
+const urls = [SITE_URL + "/"].concat(products.map((p) => SITE_URL + p._url),
+  ["contact", "retourneren", "voorwaarden", "privacy"].map((k) => `${SITE_URL}/${k}/`));
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).join("\n")}
 </urlset>
 `);
 
-console.log(`Gebouwd: ${products.length} productpagina's, /winkelmand/, /bedankt/, sitemap.xml, catalogi`);
+console.log(`Gebouwd: ${products.length} productpagina's, /winkelmand/, /bedankt/, 4 info-pagina's, sitemap.xml, catalogi`);
 products.forEach((p) => console.log("  " + p._url));
