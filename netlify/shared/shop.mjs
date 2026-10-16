@@ -82,6 +82,7 @@ export function validateOrder(b) {
     if (p.uitverkocht) return { error: `${p.naam} is uitverkocht. Haal het uit je winkelmand.` };
     const maat = clean(it.maat, 20);
     if (!p.maten.includes(maat)) return { error: `Kies een geldige maat voor ${p.naam}.` };
+    if ((p.uitverkochte_maten || []).includes(maat)) return { error: `${p.naam} is uitverkocht in maat ${maat}. Haal het uit je winkelmand.` };
     const aantal = Math.floor(Number(it.aantal));
     if (!(aantal >= 1 && aantal <= MAX_QTY)) return { error: "Ongeldig aantal in je winkelmand." };
     const key = p.slug + "|" + maat;

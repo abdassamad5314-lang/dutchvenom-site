@@ -58,7 +58,17 @@ collections:
               - { label: "Alt-tekst foto (voor SEO)", name: "alt_tekst", widget: "string", hint: "Beschrijf de foto in één zin, bijv. 'Zwart trainingspak met logo'" }
               - { label: "Beschrijving", name: "beschrijving", widget: "text" }
               - { label: "Badge (bijv. Nieuw / Sale / Bestseller)", name: "badge", widget: "string", required: false }
-              - { label: "Uitverkocht", name: "uitverkocht", widget: "boolean", default: false }
+              - { label: "Uitverkocht (alle maten)", name: "uitverkocht", widget: "boolean", default: false }
+              - label: "Uitverkochte maten"
+                name: "uitverkochte_maten"
+                widget: "select"
+                multiple: true
+                required: false
+                options: ["XS", "S", "M", "L", "XL", "XXL", "One size"]
+                hint: "Deze maten worden doorgestreept en zijn niet te bestellen. Leeg = alles op voorraad."
+              - { label: "Pasvorm (optioneel)", name: "pasvorm", widget: "string", required: false, hint: "Bijv. 'Oversized fit' of 'Regular fit'. Leeg = niet tonen." }
+              - { label: "Materiaal (optioneel)", name: "materiaal", widget: "string", required: false, hint: "Bijv. '80% katoen, 20% polyester, 320 g/m²'. Leeg = niet tonen." }
+              - { label: "Wasvoorschrift (optioneel)", name: "wasvoorschrift", widget: "string", required: false, hint: "Bijv. 'Binnenstebuiten wassen op 30°C, niet in de droger'." }
               - label: "Extra foto's (productpagina)"
                 name: "extra_fotos"
                 widget: "list"
@@ -95,8 +105,36 @@ collections:
           - { label: "USP 2", name: "usp_2", widget: "string" }
           - { label: "USP 3", name: "usp_3", widget: "string" }
           - { label: "Instagram URL", name: "instagram", widget: "string" }
-          - { label: "TikTok URL", name: "tiktok", widget: "string" }
+          - { label: "TikTok URL (leeg = niet tonen)", name: "tiktok", widget: "string", required: false }
           - { label: "E-mailadres", name: "email", widget: "string" }
+          - { label: "Bedrijfsnaam", name: "bedrijfsnaam", widget: "string" }
+          - { label: "Rechtsvorm", name: "rechtsvorm", widget: "string", required: false }
+          - { label: "KvK-nummer", name: "kvk", widget: "string" }
+          - { label: "Btw-id", name: "btw", widget: "string" }
+          - { label: "Vestigings-/bezoekadres (wordt op de site getoond)", name: "adres", widget: "text", required: false, hint: "Verplicht voor een webshop. Leeg = 'adres op aanvraag' (tijdelijk)." }
+          - { label: "Over ons — foto", name: "over_foto", widget: "image", required: false }
+          - label: "Maattabel heren (cm, platliggend gemeten)"
+            name: "maattabel_heren"
+            widget: "list"
+            required: false
+            summary: "{{fields.maat}}"
+            fields:
+              - { label: "Maat", name: "maat", widget: "string" }
+              - { label: "Borstwijdte", name: "borst", widget: "string", required: false }
+              - { label: "Lengte hoodie", name: "lengte", widget: "string", required: false }
+              - { label: "Mouwlengte", name: "mouw", widget: "string", required: false }
+              - { label: "Broeklengte", name: "broek", widget: "string", required: false }
+          - label: "Maattabel dames (cm, platliggend gemeten)"
+            name: "maattabel_dames"
+            widget: "list"
+            required: false
+            summary: "{{fields.maat}}"
+            fields:
+              - { label: "Maat", name: "maat", widget: "string" }
+              - { label: "Borstwijdte", name: "borst", widget: "string", required: false }
+              - { label: "Lengte hoodie", name: "lengte", widget: "string", required: false }
+              - { label: "Mouwlengte", name: "mouw", widget: "string", required: false }
+              - { label: "Broeklengte", name: "broek", widget: "string", required: false }
           - { label: "Verzendkosten (€)", name: "verzendkosten", widget: "number", value_type: "float", step: 0.05, default: 4.95 }
           - { label: "Gratis verzending vanaf (€, 0 = nooit gratis)", name: "gratis_verzending_vanaf", widget: "number", value_type: "float", step: 1, default: 75 }
           - { label: "Verzendlanden", name: "verzendlanden", widget: "select", multiple: true, options: [{ label: "Nederland", value: "NL" }, { label: "België", value: "BE" }, { label: "Duitsland", value: "DE" }, { label: "Luxemburg", value: "LU" }, { label: "Frankrijk", value: "FR" }], default: ["NL", "BE"] }

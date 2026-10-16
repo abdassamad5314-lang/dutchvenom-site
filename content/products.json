@@ -1,119 +1,185 @@
 {
   "products": [
     {
-      "badge": "Bestseller",
-      "alt_tekst": "Zwart Dutch Venom trainingspak voor heren met logo op de borst",
-      "uitverkocht": false,
-      "beschrijving": "Ons signature trainingspak. Zware kwaliteit stof, oversized fit en geborduurd DV-logo. Limited stock.",
-      "afbeelding": "/images/uploads/tracksuit-heren-zwart.webp",
-      "prijs": 89.95,
+      "naam": "DV Men Signature Tracksuit — Black",
       "categorie": "Heren",
+      "prijs": 89.95,
       "oude_prijs": 119.95,
-      "video": "",
-      "naam": "DV men Signature Tracksuit — Black",
+      "afbeelding": "/images/uploads/tracksuit-heren-zwart.webp",
       "extra_fotos": [
         "/images/uploads/tracksuit-heren-zwart-voor.webp"
       ],
+      "video": "",
+      "alt_tekst": "Zwart Dutch Venom trainingspak voor heren met VENOM-print op de mouw",
+      "beschrijving": "Ons signature trainingspak in diep zwart. Hoodie met rits en capuchon, bijpassende joggingbroek met boorden, het DV-embleem op de borst en de VENOM-print op mouw en broekspijp.",
+      "badge": "Bestseller",
+      "uitverkocht": false,
       "maten": [
         "S",
         "M",
         "L",
         "XL"
-      ]
+      ],
+      "uitverkochte_maten": [
+        "L",
+        "XL"
+      ],
+      "materiaal": "",
+      "wasvoorschrift": ""
     },
     {
-      "badge": "Nieuw",
-      "alt_tekst": "Donkergroen Dutch Venom trainingspak voor heren",
-      "uitverkocht": false,
-      "beschrijving": "Dezelfde signature fit in diep venom-groen. Rib-details bij pols en enkel, dubbel gestikte naden.",
+      "naam": "DV Men Signature Tracksuit — Green",
+      "categorie": "Heren",
+      "prijs": 89.95,
+      "oude_prijs": 119.95,
       "afbeelding": "/images/uploads/tracksuit-heren-groen.webp",
-      "prijs": 89.95,
-      "categorie": "Heren",
-      "oude_prijs": null,
-      "video": "",
-      "naam": "DV men Signature Tracksuit — Forest",
       "extra_fotos": [
-        "/images/uploads/tracksuit-heren-groen-voor.webp"
+        "/images/uploads/tracksuit-heren-groen-voor.webp",
+        "/images/uploads/sfeer-auto-heren-rood-groen.webp",
+        "/images/uploads/sfeer-trap-koppel-groen.webp"
       ],
-      "maten": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ]
-    },
-    {
+      "video": "",
+      "alt_tekst": "Donkergroen Dutch Venom trainingspak voor heren met VENOM-print op de mouw",
+      "beschrijving": "De signature fit in diep venom-groen. Hoodie met rits en capuchon, joggingbroek met boorden, het DV-embleem op de borst en de VENOM-print op mouw en broekspijp.",
       "badge": "",
-      "alt_tekst": "Rood Dutch Venom trainingspak voor heren met VENOM-print op de mouw",
       "uitverkocht": false,
-      "beschrijving": "De signature fit in diep venom-rood. Oversized fit, geborduurd DV-logo en VENOM-print op de mouw.",
-      "afbeelding": "/images/uploads/tracksuit-heren-rood.webp",
-      "prijs": 89.95,
-      "categorie": "Heren",
-      "oude_prijs": null,
-      "video": "",
-      "naam": "DV men Signature Tracksuit — red",
-      "extra_fotos": [
-        "/images/uploads/tracksuit-heren-rood-voor.webp"
-      ],
       "maten": [
         "S",
         "M",
         "L",
         "XL"
-      ]
+      ],
+      "uitverkochte_maten": [
+        "L",
+        "XL"
+      ],
+      "materiaal": "",
+      "wasvoorschrift": ""
     },
     {
-      "badge": "Sale",
-      "alt_tekst": "Zwarte Dutch Venom crossbody tas met verstelbare band",
-      "uitverkocht": false,
-      "beschrijving": "Compacte crossbody met waterafstotende buitenkant, twee ritsvakken en verstelbare band.",
-      "afbeelding": "/images/product-4.svg",
-      "prijs": 1.0,
-      "categorie": "Accessoires",
-      "oude_prijs": 49.95,
+      "naam": "DV Men Signature Tracksuit — Red",
+      "categorie": "Heren",
+      "prijs": 89.95,
+      "oude_prijs": 119.95,
+      "afbeelding": "/images/uploads/tracksuit-heren-rood.webp",
+      "extra_fotos": [
+        "/images/uploads/tracksuit-heren-rood-voor.webp",
+        "/images/uploads/sfeer-trap-heren-rood-groen.webp",
+        "/images/uploads/sfeer-auto-heren-rood-groen.webp"
+      ],
       "video": "",
-      "naam": "DV Crossbody Bag",
+      "alt_tekst": "Rood Dutch Venom trainingspak voor heren met VENOM-print op de mouw",
+      "beschrijving": "De signature fit in opvallend venom-rood. Hoodie met rits en capuchon, joggingbroek met boorden, het DV-embleem op de borst en de VENOM-print op mouw en broekspijp.",
+      "badge": "",
+      "uitverkocht": false,
+      "maten": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "uitverkochte_maten": [
+        "L",
+        "XL"
+      ],
+      "materiaal": "",
+      "wasvoorschrift": ""
+    },
+    {
+      "naam": "DV Women Signature Tracksuit — Black",
+      "categorie": "Dames",
+      "prijs": 89.95,
+      "oude_prijs": 119.95,
+      "afbeelding": "/images/uploads/tracksuit-dames-zwart.webp",
       "extra_fotos": [],
+      "video": "",
+      "alt_tekst": "Zwart Dutch Venom trainingspak voor dames",
+      "beschrijving": "Het signature trainingspak in een damesfit, in diep zwart. Hoodie met rits en capuchon, joggingbroek met trekkoord en het DV-embleem op de borst.",
+      "badge": "",
+      "uitverkocht": false,
+      "maten": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "uitverkochte_maten": [
+        "L",
+        "XL"
+      ],
+      "materiaal": "",
+      "wasvoorschrift": ""
+    },
+    {
+      "naam": "DV Women Signature Tracksuit — Green",
+      "categorie": "Dames",
+      "prijs": 89.95,
+      "oude_prijs": 119.95,
+      "afbeelding": "/images/uploads/tracksuit-dames-groen.webp",
+      "extra_fotos": [
+        "/images/uploads/sfeer-trap-koppel-groen.webp"
+      ],
+      "video": "",
+      "alt_tekst": "Donkergroen Dutch Venom trainingspak voor dames",
+      "beschrijving": "Het signature trainingspak in een damesfit, in diep venom-groen. Hoodie met rits en capuchon, joggingbroek met trekkoord en het DV-embleem op de borst. Matcht met de heren-versie.",
+      "badge": "Nieuw",
+      "uitverkocht": false,
+      "maten": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "uitverkochte_maten": [
+        "L",
+        "XL"
+      ],
+      "materiaal": "",
+      "wasvoorschrift": ""
+    },
+    {
+      "naam": "DV Women Signature Tracksuit — Red",
+      "categorie": "Dames",
+      "prijs": 89.95,
+      "oude_prijs": 119.95,
+      "afbeelding": "/images/uploads/tracksuit-dames-rood.webp",
+      "extra_fotos": [],
+      "video": "",
+      "alt_tekst": "Rood Dutch Venom trainingspak voor dames",
+      "beschrijving": "Het signature trainingspak in een damesfit, in opvallend venom-rood. Hoodie met rits en capuchon, joggingbroek met trekkoord en het DV-embleem op de borst.",
+      "badge": "",
+      "uitverkocht": false,
+      "maten": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "uitverkochte_maten": [
+        "L",
+        "XL"
+      ],
+      "materiaal": "",
+      "wasvoorschrift": ""
+    },
+    {
+      "naam": "DV Crossbody Bag",
+      "categorie": "Accessoires",
+      "prijs": 39.95,
+      "oude_prijs": 49.95,
+      "afbeelding": "/images/uploads/crossbody-bag-sahara.webp",
+      "extra_fotos": [],
+      "video": "",
+      "alt_tekst": "Zwarte Dutch Venom crossbody tas, gedragen over een zwart T-shirt",
+      "beschrijving": "Compacte zwarte crossbody tas met het DV-embleem en een verstelbare band. Draag hem voor op de borst of over je schouder.",
+      "badge": "Sale",
+      "uitverkocht": false,
       "maten": [
         "One size"
-      ]
-    },
-    {
-      "badge": "",
-      "alt_tekst": "Zwart Dutch Venom trainingspak voor dames",
-      "uitverkocht": false,
-      "beschrijving": "Het signature trainingspak, nu in een damesfit. Zwart, geborduurd DV-logo. Foto volgt binnenkort.",
-      "afbeelding": "/images/foto-volgt-dames.svg",
-      "prijs": 89.95,
-      "categorie": "Dames",
-      "oude_prijs": null,
-      "video": "",
-      "naam": "DV women Signature Tracksuit — Black",
-      "extra_fotos": [],
-      "maten": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ]
-    },
-    {
-      "categorie": "Dames",
-      "uitverkocht": false,
-      "naam": "DV women Signature Tracksuit — Red",
-      "prijs": 89.95,
-      "alt_tekst": "Rood Dutch Venom trainingspak voor dames",
-      "beschrijving": "Het signature trainingspak in venom-rood, in een damesfit. Geborduurd DV-logo. Foto volgt binnenkort.",
-      "afbeelding": "/images/foto-volgt-dames.svg",
-      "badge": "",
-      "extra_fotos": [],
-      "maten": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ]
+      ],
+      "uitverkochte_maten": [],
+      "materiaal": "",
+      "wasvoorschrift": ""
     }
   ]
 }
